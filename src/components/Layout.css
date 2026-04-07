@@ -6,69 +6,187 @@
 }
 
 .app-header {
+  --nav-bg: #0b1b2a;
+  --nav-pill: rgba(255, 255, 255, 0.12);
+  --nav-pill-border: rgba(255, 255, 255, 0.18);
+  --nav-pill-strong: rgba(255, 255, 255, 0.18);
+  --nav-pill-strong-border: rgba(255, 255, 255, 0.26);
+  --nav-text: rgba(255, 255, 255, 0.86);
+  --nav-text-dim: rgba(255, 255, 255, 0.66);
+  --nav-text-strong: rgba(255, 255, 255, 0.95);
+
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 12px 20px;
-  padding: 16px 20px;
-  border-bottom: 1px solid var(--border);
-  background: var(--bg);
+  gap: 12px;
+  padding: 14px 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background:
+    radial-gradient(
+      1200px 240px at 30% -10%,
+      rgba(79, 210, 255, 0.25),
+      transparent 60%
+    ),
+    radial-gradient(
+      1200px 240px at 70% -20%,
+      rgba(155, 123, 255, 0.22),
+      transparent 58%
+    ),
+    var(--nav-bg);
   position: sticky;
   top: 0;
   z-index: 10;
 }
 
-.app-brand {
-  font-weight: 600;
-  color: var(--text-h);
-  text-decoration: none;
-  letter-spacing: -0.02em;
-  padding: 6px 10px;
-  margin: -6px -10px;
-  border-radius: 6px;
-  transition:
-    color 0.2s ease,
-    background-color 0.2s ease;
+.app-header__left {
+  min-width: 220px;
 }
 
-/* 非首页：悬停与右侧导航一致 */
-.app-brand:not(.app-brand--active):hover,
-.app-brand:not(.app-brand--active):focus-visible {
-  color: var(--accent);
-  background-color: var(--accent-bg);
+.app-header__center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.app-header__right {
+  min-width: 320px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.app-brand {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--nav-text-strong);
+  font-weight: 650;
+  letter-spacing: 0.2px;
+  padding: 6px 10px;
+  margin: -6px -10px;
+  border-radius: 999px;
+  transition:
+    color 0.18s ease,
+    background-color 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.app-brand__logo {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #4fd2ff, #3aa0ff);
+  box-shadow: 0 10px 22px rgba(79, 210, 255, 0.16);
+}
+
+.app-brand__text {
+  display: inline-flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.app-brand__title {
+  font-size: 14px;
+}
+
+.app-brand__subtitle {
+  font-size: 12px;
+  color: var(--nav-text-dim);
+  margin-top: 2px;
+}
+
+.app-brand:hover,
+.app-brand:focus-visible {
+  background-color: var(--nav-pill);
 }
 
 /* 在首页时与当前页导航同高亮（悬停其它导航项时由 Navbar 状态临时去掉） */
 .app-brand--active {
-  color: var(--accent);
-  background-color: var(--accent-bg);
-}
-
-.app-nav {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 12px;
-  align-items: center;
+  background-color: var(--nav-pill-strong);
 }
 
 .app-nav-link {
-  color: var(--text);
   text-decoration: none;
-  font-size: 0.95rem;
-  padding: 6px 10px;
-  border-radius: 6px;
+  color: var(--nav-text);
+  font-size: 13px;
+  padding: 10px 12px;
+  border-radius: 999px;
+  border: 1px solid transparent;
   transition:
-    color 0.2s ease,
-    background-color 0.2s ease;
+    color 0.18s ease,
+    background-color 0.18s ease,
+    border-color 0.18s ease;
 }
 
-/* 悬停与当前选中使用同一套视觉，避免两种状态不一致 */
 .app-nav-link:hover,
 .app-nav-link:focus-visible,
 .app-nav-link--active {
-  color: var(--accent);
-  background-color: var(--accent-bg);
+  color: var(--nav-text-strong);
+  background-color: var(--nav-pill);
+  border-color: var(--nav-pill-border);
+}
+
+.app-nav-link--active {
+  background-color: var(--nav-pill-strong);
+  border-color: var(--nav-pill-strong-border);
+}
+
+.app-search {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.app-search__icon {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.55);
+  flex: 0 0 auto;
+}
+
+.app-search__input {
+  width: 160px;
+  max-width: 22vw;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 12px;
+}
+
+.app-search__input::placeholder {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.app-pill {
+  font-size: 12px;
+  padding: 8px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.86);
+}
+
+.app-btn {
+  font-size: 12px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.92);
+  color: #0b1b2a;
+  font-weight: 650;
+}
+
+.app-btn--ghost {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .app-main {
@@ -82,12 +200,26 @@
 
 @media (max-width: 640px) {
   .app-header {
-    flex-direction: column;
-    align-items: flex-start;
+    flex-wrap: wrap;
+    align-items: stretch;
+    padding: 12px 14px;
   }
 
-  .app-nav {
+  .app-header__left {
+    min-width: 0;
+  }
+
+  .app-header__center {
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding: 6px 0;
+  }
+
+  .app-header__right {
+    min-width: 0;
     width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
   }
 }
 

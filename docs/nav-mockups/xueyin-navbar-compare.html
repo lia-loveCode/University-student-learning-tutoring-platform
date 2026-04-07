@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>导航栏对比（学银风格）</title>
+    <style>
+      :root {
+        --bg: #0b1b2a;
+        --bg-2: rgba(255, 255, 255, 0.08);
+        --text: rgba(255, 255, 255, 0.85);
+        --text-dim: rgba(255, 255, 255, 0.65);
+        --text-strong: #fff;
+        --brand: #4fd2ff;
+        --pill: rgba(255, 255, 255, 0.12);
+        --pill-border: rgba(255, 255, 255, 0.18);
+        --active: rgba(255, 255, 255, 0.92);
+        --accent: #9b7bff;
+        --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, "PingFang SC",
+          "Hiragino Sans GB", "Microsoft Yahei", sans-serif;
+      }
+      body {
+        margin: 0;
+        background: #f3f5f8;
+        color: #0f172a;
+      }
+      .wrap {
+        max-width: 1100px;
+        margin: 24px auto 60px;
+        padding: 0 16px;
+      }
+      h1 {
+        font-size: 20px;
+        margin: 0 0 10px;
+      }
+      p {
+        margin: 0 0 16px;
+        color: #475569;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+      @media (min-width: 960px) {
+        .grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+      .card {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+      }
+      .card-hd {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 14px;
+        border-bottom: 1px solid #e2e8f0;
+        background: #fbfdff;
+      }
+      .badge {
+        font-size: 12px;
+        color: #64748b;
+        background: #eef2ff;
+        border: 1px solid #e0e7ff;
+        padding: 4px 8px;
+        border-radius: 999px;
+      }
+      .hint {
+        font-size: 12px;
+        color: #64748b;
+      }
+      /* ---- navbar mock ---- */
+      .nav {
+        height: 62px;
+        background: radial-gradient(
+            1200px 240px at 30% -10%,
+            rgba(79, 210, 255, 0.25),
+            transparent 60%
+          ),
+          radial-gradient(
+            1200px 240px at 70% -20%,
+            rgba(155, 123, 255, 0.22),
+            transparent 58%
+          ),
+          var(--bg);
+        color: var(--text);
+        display: flex;
+        align-items: center;
+        padding: 0 14px;
+        gap: 12px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 180px;
+      }
+      .logo {
+        width: 26px;
+        height: 26px;
+        border-radius: 7px;
+        background: linear-gradient(135deg, var(--brand), #3aa0ff);
+        box-shadow: 0 8px 18px rgba(79, 210, 255, 0.18);
+      }
+      .title {
+        font-weight: 650;
+        letter-spacing: 0.2px;
+        color: var(--text-strong);
+        font-size: 14px;
+        line-height: 1.1;
+      }
+      .sub {
+        font-size: 12px;
+        color: var(--text-dim);
+        margin-top: 2px;
+      }
+      .menu {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex: 1;
+        justify-content: center;
+        min-width: 260px;
+      }
+      .item {
+        position: relative;
+        font-size: 13px;
+        padding: 10px 12px;
+        border-radius: 999px;
+        color: var(--text);
+        border: 1px solid transparent;
+        transition: 160ms ease;
+        cursor: default;
+        user-select: none;
+      }
+      .item:hover {
+        background: var(--pill);
+        border-color: var(--pill-border);
+        color: var(--active);
+      }
+      .item.active {
+        background: rgba(255, 255, 255, 0.18);
+        border-color: rgba(255, 255, 255, 0.26);
+        color: var(--active);
+      }
+      .right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 280px;
+        justify-content: flex-end;
+      }
+      .search {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 10px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        min-width: 160px;
+      }
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.55);
+      }
+      .ph {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.72);
+      }
+      .pill {
+        font-size: 12px;
+        padding: 8px 10px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.08);
+        color: rgba(255, 255, 255, 0.86);
+      }
+      .btn {
+        font-size: 12px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.92);
+        color: #0b1b2a;
+        font-weight: 650;
+      }
+      .btn.ghost {
+        background: rgba(255, 255, 255, 0.08);
+        color: rgba(255, 255, 255, 0.9);
+      }
+      .spacer {
+        height: 220px;
+        background: linear-gradient(
+          180deg,
+          rgba(11, 27, 42, 0.8),
+          rgba(11, 27, 42, 0.08) 70%,
+          transparent
+        );
+      }
+      .note {
+        padding: 14px;
+        color: #334155;
+        font-size: 13px;
+      }
+      code {
+        background: #0b1b2a0f;
+        padding: 2px 6px;
+        border-radius: 6px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>导航栏对比草图（学银风格方向）</h1>
+      <p>
+        这是一个“外观/布局”参考草图，不是像素级复刻。你看完后告诉我你更想要哪种版本，
+        我再按你的选择去改 React 里的 <code>Navbar</code> 和 CSS。
+      </p>
+
+      <div class="grid">
+        <section class="card">
+          <div class="card-hd">
+            <div class="badge">方案 A（更接近学银：深色背景 + 圆角胶囊菜单）</div>
+            <div class="hint">Logo + 中间菜单 + 右侧搜索/按钮</div>
+          </div>
+          <div class="nav">
+            <div class="brand">
+              <div class="logo"></div>
+              <div>
+                <div class="title">学习辅导平台</div>
+                <div class="sub">University Study</div>
+              </div>
+            </div>
+            <div class="menu">
+              <div class="item active">首页</div>
+              <div class="item">课程</div>
+              <div class="item">学习计划</div>
+              <div class="item">学习进度</div>
+              <div class="item">提问</div>
+              <div class="item">个人中心</div>
+            </div>
+            <div class="right">
+              <div class="search"><div class="dot"></div><div class="ph">搜索课程/问题</div></div>
+              <div class="pill">English</div>
+              <button class="btn ghost">登录</button>
+              <button class="btn">注册</button>
+            </div>
+          </div>
+          <div class="spacer"></div>
+          <div class="note">
+            适合你给的学银截图：顶部<strong>深色横条</strong>、菜单项是<strong>圆角胶囊</strong>，
+            选中与 hover 都是“亮一些的胶囊底”。
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-hd">
+            <div class="badge">方案 B（保留你现在的浅色，但把“学银的胶囊高亮”引入）</div>
+            <div class="hint">不做深色大背景，迁移成本最低</div>
+          </div>
+          <div class="nav" style="background: #ffffff; color: #0f172a; border-bottom: 1px solid #e2e8f0">
+            <div class="brand" style="min-width: 180px">
+              <div class="logo" style="background: linear-gradient(135deg, #aa3bff, #4fd2ff)"></div>
+              <div>
+                <div class="title" style="color:#0f172a">学习辅导平台</div>
+                <div class="sub" style="color:#475569">University Study</div>
+              </div>
+            </div>
+            <div class="menu" style="justify-content:flex-start">
+              <div class="item active" style="background: rgba(170,59,255,0.12); border-color: rgba(170,59,255,0.25); color:#7c2cff">首页</div>
+              <div class="item" style="color:#334155">课程</div>
+              <div class="item" style="color:#334155">学习计划</div>
+              <div class="item" style="color:#334155">学习进度</div>
+            </div>
+            <div class="right" style="min-width: 320px">
+              <div class="search" style="background:#f1f5f9; border-color:#e2e8f0">
+                <div class="dot" style="background:#94a3b8"></div>
+                <div class="ph" style="color:#64748b">搜索</div>
+              </div>
+              <button class="btn ghost" style="background:#f1f5f9; border-color:#e2e8f0; color:#0f172a">登录</button>
+            </div>
+          </div>
+          <div class="spacer" style="background: linear-gradient(180deg, rgba(15,23,42,0.08), transparent)"></div>
+          <div class="note">
+            如果你只想要“hover/active 的胶囊动画效果”，但不想把整站改成深色横条，这个更稳。
+          </div>
+        </section>
+      </div>
+    </div>
+  </body>
+</html>

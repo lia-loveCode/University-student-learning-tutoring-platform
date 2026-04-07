@@ -19,25 +19,33 @@ function showHomeActive(isRouteActive, hoveredTo) {
 
 export default function Navbar() {
   const [hoveredTo, setHoveredTo] = useState(null)
+  const [query, setQuery] = useState('')
 
   return (
     <header
       className="app-header"
       onMouseLeave={() => setHoveredTo(null)}
     >
-      <NavLink
-        to="/"
-        className={({ isActive }) =>
-          showHomeActive(isActive, hoveredTo)
-            ? 'app-brand app-brand--active'
-            : 'app-brand'
-        }
-        end
-        onMouseEnter={() => setHoveredTo('/')}
-      >
-        学习辅导平台
-      </NavLink>
-      <nav className="app-nav" aria-label="主导航">
+      <div className="app-header__left">
+        <NavLink
+          to="/"
+          className={({ isActive }) =>
+            showHomeActive(isActive, hoveredTo)
+              ? 'app-brand app-brand--active'
+              : 'app-brand'
+          }
+          end
+          onMouseEnter={() => setHoveredTo('/')}
+        >
+          <span className="app-brand__logo" aria-hidden="true" />
+          <span className="app-brand__text">
+            <span className="app-brand__title">学习辅导平台</span>
+            <span className="app-brand__subtitle">University Study</span>
+          </span>
+        </NavLink>
+      </div>
+
+      <nav className="app-header__center app-nav" aria-label="主导航">
         {links.map(({ to, label }) => (
           <NavLink
             key={to}
@@ -54,6 +62,27 @@ export default function Navbar() {
           </NavLink>
         ))}
       </nav>
+
+      <div className="app-header__right">
+        <label className="app-search" aria-label="搜索">
+          <span className="app-search__icon" aria-hidden="true" />
+          <input
+            className="app-search__input"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="搜索课程/问题"
+          />
+        </label>
+        <button className="app-pill" type="button">
+          English
+        </button>
+        <button className="app-btn app-btn--ghost" type="button">
+          登录
+        </button>
+        <button className="app-btn" type="button">
+          注册
+        </button>
+      </div>
     </header>
   )
 }
