@@ -1,8 +1,13 @@
+import BannerCarousel from '../components/BannerCarousel.jsx'
+
 export default function Home() {
   return (
-    <section>
-      <h1>首页</h1>
-      <p>大学生学习辅导平台 — 从这里进入课程、计划与问答等模块。</p>
-    </section>
+    <>
+      <BannerCarousel />
+      <section>
+        <h2>推荐入口</h2>
+        <p>从课程、学习计划与答疑开始，快速进入你的学习节奏。</p>
+      </section>
+    </>
   )
 }

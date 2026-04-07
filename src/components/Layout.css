@@ -237,8 +237,8 @@
 
 .app-main {
   flex: 1;
-  padding: 24px 20px 48px;
-  max-width: 900px;
+  padding: 0px 20px 48px;
+  max-width: 1438px;
   width: 100%;
   margin: 0 auto;
   box-sizing: border-box;
