@@ -24,10 +24,25 @@
   color: var(--text-h);
   text-decoration: none;
   letter-spacing: -0.02em;
+  padding: 6px 10px;
+  margin: -6px -10px;
+  border-radius: 6px;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
 }
 
-.app-brand:hover {
+/* 非首页：悬停与右侧导航一致 */
+.app-brand:not(.app-brand--active):hover,
+.app-brand:not(.app-brand--active):focus-visible {
   color: var(--accent);
+  background-color: var(--accent-bg);
+}
+
+/* 在首页时与当前页导航同高亮（悬停其它导航项时由 Navbar 状态临时去掉） */
+.app-brand--active {
+  color: var(--accent);
+  background-color: var(--accent-bg);
 }
 
 .app-nav {
@@ -44,18 +59,16 @@
   padding: 6px 10px;
   border-radius: 6px;
   transition:
-    color 0.15s,
-    background 0.15s;
+    color 0.2s ease,
+    background-color 0.2s ease;
 }
 
-.app-nav-link:hover {
-  color: var(--text-h);
-  background: var(--social-bg);
-}
-
+/* 悬停与当前选中使用同一套视觉，避免两种状态不一致 */
+.app-nav-link:hover,
+.app-nav-link:focus-visible,
 .app-nav-link--active {
   color: var(--accent);
-  background: var(--accent-bg);
+  background-color: var(--accent-bg);
 }
 
 .app-main {

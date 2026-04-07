@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 
 const links = [
@@ -9,10 +10,31 @@ const links = [
   { to: '/profile', label: '个人中心' },
 ]
 
+/** 当前路由是首页时，若鼠标正悬在「非首页」链接上，则暂时不显示首页的选中态 */
+function showHomeActive(isRouteActive, hoveredTo) {
+  if (!isRouteActive) return false
+  if (hoveredTo == null) return true
+  return hoveredTo === '/'
+}
+
 export default function Navbar() {
+  const [hoveredTo, setHoveredTo] = useState(null)
+
   return (
-    <header className="app-header">
-      <NavLink to="/" className="app-brand" end>
+    <header
+      className="app-header"
+      onMouseLeave={() => setHoveredTo(null)}
+    >
+      <NavLink
+        to="/"
+        className={({ isActive }) =>
+          showHomeActive(isActive, hoveredTo)
+            ? 'app-brand app-brand--active'
+            : 'app-brand'
+        }
+        end
+        onMouseEnter={() => setHoveredTo('/')}
+      >
         学习辅导平台
       </NavLink>
       <nav className="app-nav" aria-label="主导航">
@@ -21,9 +43,12 @@ export default function Navbar() {
             key={to}
             to={to}
             className={({ isActive }) =>
-              isActive ? 'app-nav-link app-nav-link--active' : 'app-nav-link'
+              showHomeActive(isActive, hoveredTo)
+                ? 'app-nav-link app-nav-link--active'
+                : 'app-nav-link'
             }
             end={to === '/'}
+            onMouseEnter={() => setHoveredTo(to)}
           >
             {label}
           </NavLink>
