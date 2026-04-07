@@ -26,62 +26,65 @@ export default function Navbar() {
       className="app-header"
       onMouseLeave={() => setHoveredTo(null)}
     >
-      <div className="app-header__left">
-        <NavLink
-          to="/"
-          className={({ isActive }) =>
-            showHomeActive(isActive, hoveredTo)
-              ? 'app-brand app-brand--active'
-              : 'app-brand'
-          }
-          end
-          onMouseEnter={() => setHoveredTo('/')}
-        >
-          <span className="app-brand__logo" aria-hidden="true" />
-          <span className="app-brand__text">
-            <span className="app-brand__title">学习辅导平台</span>
-            <span className="app-brand__subtitle">University Study</span>
-          </span>
-        </NavLink>
-      </div>
-
-      <nav className="app-header__center app-nav" aria-label="主导航">
-        {links.map(({ to, label }) => (
+      <div className="app-header__inner">
+        <div className="app-header__left">
           <NavLink
-            key={to}
-            to={to}
-            className={({ isActive }) =>
-              showHomeActive(isActive, hoveredTo)
-                ? 'app-nav-link app-nav-link--active'
-                : 'app-nav-link'
-            }
-            end={to === '/'}
-            onMouseEnter={() => setHoveredTo(to)}
+            to="/"
+            className="app-brand"
+            end
+            onMouseEnter={() => setHoveredTo('/')}
           >
-            {label}
+            <span className="app-brand__logo" aria-hidden="true" />
+            <span className="app-brand__text">
+              <span className="app-brand__title">学习辅导平台</span>
+              <span className="app-brand__subtitle">University Study</span>
+            </span>
           </NavLink>
-        ))}
-      </nav>
+        </div>
 
-      <div className="app-header__right">
-        <label className="app-search" aria-label="搜索">
-          <span className="app-search__icon" aria-hidden="true" />
-          <input
-            className="app-search__input"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="搜索课程/问题"
-          />
-        </label>
-        <button className="app-pill" type="button">
-          English
-        </button>
-        <button className="app-btn app-btn--ghost" type="button">
-          登录
-        </button>
-        <button className="app-btn" type="button">
-          注册
-        </button>
+        <nav className="app-header__center app-nav" aria-label="主导航">
+          {links.map(({ to, label }) => (
+            <NavLink
+              key={to}
+              to={to}
+              className={({ isActive }) =>
+                showHomeActive(isActive, hoveredTo)
+                  ? 'app-nav-link app-nav-link--active'
+                  : 'app-nav-link'
+              }
+              end={to === '/'}
+              onMouseEnter={() => setHoveredTo(to)}
+            >
+              {label}
+            </NavLink>
+          ))}
+        </nav>
+
+        <div className="app-header__right">
+          <div className="app-header__searchRow">
+            <label className="app-search" aria-label="搜索">
+              <span className="app-search__icon" aria-hidden="true" />
+              <input
+                className="app-search__input"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="搜索课程/问题"
+              />
+            </label>
+          </div>
+
+          <div className="app-header__authRow">
+            <button className="app-pill" type="button">
+              English
+            </button>
+            <button className="app-btn app-btn--ghost" type="button">
+              登录
+            </button>
+            <button className="app-btn" type="button">
+              注册
+            </button>
+          </div>
+        </div>
       </div>
     </header>
   )
