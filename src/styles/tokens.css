@@ -1,0 +1,120 @@
+/*
+  Design Tokens (UED规范参数) — 大学生学习辅导平台
+  目标：统一所有页面的颜色、字号、圆角、间距、阴影、版心等基础规范。
+*/
+
+:root {
+  /* Typography */
+  --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'PingFang SC',
+    'Hiragino Sans GB', 'Microsoft YaHei', Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    'Liberation Mono', monospace;
+
+  /* Type scale */
+  --text-12: 12px;
+  --text-14: 14px;
+  --text-16: 16px;
+  --text-18: 18px;
+  --text-20: 20px;
+  --text-24: 24px;
+  --text-32: 32px;
+  --text-40: 40px;
+
+  /* Line heights */
+  --lh-18: 18px;
+  --lh-22: 22px;
+  --lh-24: 24px;
+  --lh-28: 28px;
+  --lh-30: 30px;
+  --lh-34: 34px;
+  --lh-42: 42px;
+  --lh-52: 52px;
+
+  /* Spacing (8pt system) */
+  --space-4: 4px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-20: 20px;
+  --space-24: 24px;
+  --space-32: 32px;
+  --space-40: 40px;
+  --space-48: 48px;
+  --space-64: 64px;
+
+  /* Radius */
+  --radius-6: 6px;
+  --radius-8: 8px;
+  --radius-12: 12px;
+  --radius-16: 16px;
+  --radius-pill: 999px;
+
+  /* Shadows */
+  --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.06);
+  --shadow-card-hover: 0 10px 24px rgba(0, 0, 0, 0.1);
+  --ring-focus: 0 0 0 3px rgba(22, 119, 255, 0.25);
+
+  /* Brand / Primary (教育平台蓝) */
+  --color-primary: #1677ff;
+  --color-primary-hover: #0f63d6;
+  --color-primary-active: #0b4fb0;
+  --color-primary-bg: rgba(22, 119, 255, 0.12);
+
+  /* Decorative (首屏/导航装饰) */
+  --color-cyan: #4fd2ff;
+  --color-purple: #9b7bff;
+
+  /* Neutrals (内容区浅色) */
+  --color-bg: #f5f7fa;
+  --color-surface: #ffffff;
+  --color-surface-2: #f8fafc;
+  --color-border: #e5e7eb;
+
+  --color-text-strong: #0f172a;
+  --color-text: #334155;
+  --color-text-dim: #64748b;
+
+  /* Semantic */
+  --color-success: #16a34a;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+  --color-info: var(--color-primary);
+
+  /* Layout */
+  --container-max: 1200px;
+  --container-padding-x: 20px;
+}
+
+/*
+  Alias tokens to keep compatibility with existing CSS.
+  逐步迁移时可直接使用新 token；老变量仍可用。
+*/
+:root {
+  --bg: var(--color-bg);
+  --border: var(--color-border);
+  --text-h: var(--color-text-strong);
+  --text: var(--color-text);
+
+  /* legacy accent (保持你当前蓝紫氛围) */
+  --accent: var(--color-primary);
+  --accent-bg: var(--color-primary-bg);
+  --accent-border: rgba(22, 119, 255, 0.45);
+
+  --sans: var(--font-sans);
+  --heading: var(--font-sans);
+  --mono: var(--font-mono);
+}
+
+/* Dark preference: keep for code blocks & basic background, header/hero still handles its own dark styles */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #0b1220;
+    --color-surface: #0f172a;
+    --color-surface-2: #111c33;
+    --color-border: rgba(255, 255, 255, 0.12);
+    --color-text-strong: rgba(255, 255, 255, 0.92);
+    --color-text: rgba(255, 255, 255, 0.78);
+    --color-text-dim: rgba(255, 255, 255, 0.6);
+  }
+}
+

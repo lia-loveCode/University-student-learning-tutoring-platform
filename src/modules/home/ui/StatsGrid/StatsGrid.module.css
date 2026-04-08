@@ -1,0 +1,71 @@
+.grid {
+  display: grid;
+  gap: var(--space-12);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.card {
+  padding: var(--space-16);
+}
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-12);
+  align-items: baseline;
+}
+
+.label {
+  font-size: var(--text-14);
+  line-height: var(--lh-22);
+  color: var(--color-text-dim);
+}
+
+.trend {
+  font-size: var(--text-12);
+  color: var(--color-success);
+  background: rgba(22, 163, 74, 0.12);
+  border: 1px solid rgba(22, 163, 74, 0.18);
+  border-radius: var(--radius-pill);
+  padding: 2px 8px;
+}
+
+.value {
+  margin-top: 10px;
+  font-size: 28px;
+  line-height: 1.1;
+  font-weight: 700;
+  color: var(--color-text-strong);
+}
+
+.miniChart {
+  margin-top: 12px;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 4px;
+  align-items: end;
+  height: 34px;
+}
+
+.miniChart span {
+  display: block;
+  border-radius: 4px;
+  background: rgba(22, 119, 255, 0.22);
+}
+
+.miniChart span:nth-child(1) { height: 30%; }
+.miniChart span:nth-child(2) { height: 45%; }
+.miniChart span:nth-child(3) { height: 38%; }
+.miniChart span:nth-child(4) { height: 62%; }
+.miniChart span:nth-child(5) { height: 52%; }
+.miniChart span:nth-child(6) { height: 70%; }
+.miniChart span:nth-child(7) { height: 58%; }
+.miniChart span:nth-child(8) { height: 78%; }
+
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+

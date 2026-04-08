@@ -1,0 +1,43 @@
+export const courses = [
+  {
+    id: '1',
+    title: 'React 入门到项目实战',
+    category: '计算机',
+    level: '入门',
+    author: '王同学',
+    learners: 2034,
+    rating: 4.8,
+    summary: '从 0 到 1 构建 React 项目，掌握组件拆分、路由与状态管理。',
+  },
+  {
+    id: '2',
+    title: '高等数学重点突破',
+    category: '考研',
+    level: '进阶',
+    author: '李同学',
+    learners: 1589,
+    rating: 4.7,
+    summary: '用题型归纳把高数学扎实，专项突破极限、导数、积分。',
+  },
+  {
+    id: '3',
+    title: '英语写作高分模板',
+    category: '英语',
+    level: '进阶',
+    author: '张同学',
+    learners: 2876,
+    rating: 4.9,
+    summary: '常见题型高分结构与句式升级，提升表达逻辑与准确度。',
+  },
+  {
+    id: '4',
+    title: '数据结构与算法（刷题路线）',
+    category: '计算机',
+    level: '进阶',
+    author: '陈同学',
+    learners: 3210,
+    rating: 4.8,
+    summary: '从数组到图论，建立刷题路线与复盘方法，提升面试能力。',
+  },
+]
+
