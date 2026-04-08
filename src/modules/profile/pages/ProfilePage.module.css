@@ -1,0 +1,80 @@
+.subtle {
+  color: var(--color-text-dim);
+  margin-top: 6px;
+}
+
+.profileCard {
+  margin-top: 16px;
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  padding: 14px;
+  border-radius: var(--radius-12);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.avatar {
+  width: 54px;
+  height: 54px;
+  border-radius: var(--radius-12);
+  background: linear-gradient(135deg, rgba(79, 210, 255, 0.55), rgba(155, 123, 255, 0.45));
+  border: 1px solid rgba(22, 119, 255, 0.18);
+  flex: 0 0 auto;
+}
+
+.meta {
+  min-width: 0;
+}
+
+.name {
+  font-weight: 700;
+  color: var(--color-text-strong);
+}
+
+.sub {
+  color: var(--color-text-dim);
+  margin-top: 4px;
+  font-size: 12px;
+}
+
+.bio {
+  margin-top: 8px;
+  color: var(--color-text);
+  font-size: 14px;
+}
+
+.statsGrid {
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.statCard {
+  padding: 14px;
+  border-radius: var(--radius-12);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.statLabel {
+  font-size: 12px;
+  color: var(--color-text-dim);
+}
+
+.statValue {
+  margin-top: 8px;
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--color-text-strong);
+}
+
+@media (max-width: 1024px) {
+  .statsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+

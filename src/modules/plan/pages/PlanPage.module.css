@@ -1,0 +1,98 @@
+.subtle {
+  color: var(--color-text-dim);
+  margin-top: 6px;
+}
+
+.form {
+  margin-top: 16px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.input {
+  height: 36px;
+  border-radius: var(--radius-8);
+  border: 1px solid var(--color-border);
+  padding: 0 12px;
+  background: var(--color-surface);
+}
+
+.titleInput {
+  composes: input;
+  flex: 1 1 260px;
+}
+
+.dateInput {
+  composes: input;
+}
+
+.primaryBtn {
+  height: 36px;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(22, 119, 255, 0.2);
+  background: var(--color-primary);
+  color: #fff;
+  padding: 0 14px;
+  font-weight: 650;
+}
+
+.list {
+  margin-top: 16px;
+  display: grid;
+  gap: 10px;
+}
+
+.task {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px;
+  border-radius: var(--radius-12);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.taskMain {
+  min-width: 0;
+}
+
+.taskTitle {
+  font-weight: 650;
+  color: var(--color-text-strong);
+}
+
+.taskMeta {
+  font-size: 12px;
+  color: var(--color-text-dim);
+  margin-top: 4px;
+}
+
+.taskActions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.ghostBtn {
+  height: 32px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-2);
+  padding: 0 12px;
+  font-weight: 650;
+}
+
+.dangerBtn {
+  height: 32px;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--color-danger);
+  padding: 0 12px;
+  font-weight: 650;
+}
+
