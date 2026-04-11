@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Local product docs (PRD/UED drafts)
+local-docs/

@@ -1,98 +1,48 @@
-.subtle {
+/* 与首页 HomePage `.page` 版心、上下留白一致 */
+.page {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: var(--space-24) var(--container-padding-x) var(--space-48);
+  box-sizing: border-box;
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding: var(--space-20) 14px var(--space-40);
+  }
+}
+
+.loading {
   color: var(--color-text-dim);
-  margin-top: 6px;
+  font-size: var(--text-14);
 }
 
-.form {
-  margin-top: 16px;
+.panel {
+  padding: var(--space-24) var(--space-24) var(--space-32);
+}
+
+.listSectionHd {
+  font-size: var(--text-12);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-dim);
+  margin: var(--space-16) 2px var(--space-8);
+}
+
+.listStack {
   display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: var(--space-16);
+  margin-bottom: var(--space-32);
 }
 
-.input {
-  height: 36px;
-  border-radius: var(--radius-8);
-  border: 1px solid var(--color-border);
-  padding: 0 12px;
-  background: var(--color-surface);
-}
-
-.titleInput {
-  composes: input;
-  flex: 1 1 260px;
-}
-
-.dateInput {
-  composes: input;
-}
-
-.primaryBtn {
-  height: 36px;
-  border-radius: var(--radius-pill);
-  border: 1px solid rgba(22, 119, 255, 0.2);
-  background: var(--color-primary);
-  color: #fff;
-  padding: 0 14px;
-  font-weight: 650;
-}
-
-.list {
-  margin-top: 16px;
-  display: grid;
-  gap: 10px;
-}
-
-.task {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 14px;
+.empty {
+  padding: var(--space-32);
   border-radius: var(--radius-12);
-  border: 1px solid var(--color-border);
-  background: var(--color-surface);
-  box-shadow: var(--shadow-card);
-}
-
-.taskMain {
-  min-width: 0;
-}
-
-.taskTitle {
-  font-weight: 650;
-  color: var(--color-text-strong);
-}
-
-.taskMeta {
-  font-size: 12px;
+  border: 1px dashed var(--color-border);
   color: var(--color-text-dim);
-  margin-top: 4px;
+  font-size: var(--text-14);
+  text-align: center;
+  line-height: var(--lh-24);
 }
-
-.taskActions {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-}
-
-.ghostBtn {
-  height: 32px;
-  border-radius: var(--radius-pill);
-  border: 1px solid var(--color-border);
-  background: var(--color-surface-2);
-  padding: 0 12px;
-  font-weight: 650;
-}
-
-.dangerBtn {
-  height: 32px;
-  border-radius: var(--radius-pill);
-  border: 1px solid rgba(239, 68, 68, 0.25);
-  background: rgba(239, 68, 68, 0.1);
-  color: var(--color-danger);
-  padding: 0 12px;
-  font-weight: 650;
-}
-

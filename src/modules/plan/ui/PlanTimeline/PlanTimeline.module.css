@@ -1,0 +1,56 @@
+.outer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+}
+
+.wrap {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: var(--space-16) var(--space-4) var(--space-20);
+  margin: 0 calc(-1 * var(--space-8));
+  padding-left: var(--space-8);
+  padding-right: var(--space-8);
+  cursor: grab;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  scrollbar-gutter: stable;
+}
+
+.wrap.isDragging {
+  cursor: grabbing;
+  user-select: none;
+}
+
+.track {
+  display: flex;
+  gap: var(--space-20);
+  min-width: min-content;
+  padding: var(--space-8) var(--space-8) var(--space-12);
+}
+
+.scrollHint {
+  margin: 0;
+  font-size: var(--text-12);
+  color: var(--color-text-dim);
+  line-height: var(--lh-22);
+  padding: 0 var(--space-8);
+}
+
+.empty {
+  margin-left: 0;
+  padding-left: var(--space-8);
+  text-align: center;
+  padding: var(--space-32) var(--space-16);
+  font-size: var(--text-14);
+  color: var(--color-text-dim);
+  line-height: var(--lh-24);
+}
+
+.emptySub {
+  display: block;
+  margin-top: var(--space-8);
+  font-size: var(--text-12);
+  line-height: var(--lh-22);
+}

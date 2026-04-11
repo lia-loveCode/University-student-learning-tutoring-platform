@@ -1,119 +1,236 @@
-import { useEffect, useMemo, useState } from 'react'
-import { addTask, deleteTask, listTasks, toggleTaskDone } from '../api/planApi.js'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { listCourses } from '../../courses/api/coursesApi.js'
+import SurfaceCard from '../../../shared/ui/SurfaceCard/SurfaceCard.jsx'
+import {
+  deleteOnceTask,
+  deleteRecurringTemplate,
+  fetchPlanDashboard,
+  toggleOnceTaskDone,
+  updateOnceTaskNotes,
+  updateRecurringNotes,
+} from '../api/planApi.js'
+import { collectTimelineDates } from '../utils/planDates.js'
+import { compareNewestWriteFirst } from '../utils/planSort.js'
+import PlanAddModal from '../ui/PlanAddModal/PlanAddModal.jsx'
+import PlanOnceTaskCard from '../ui/PlanOnceTaskCard/PlanOnceTaskCard.jsx'
+import PlanPageHeader from '../ui/PlanPageHeader/PlanPageHeader.jsx'
+import PlanRecurringTaskCard from '../ui/PlanRecurringTaskCard/PlanRecurringTaskCard.jsx'
+import PlanTimeline from '../ui/PlanTimeline/PlanTimeline.jsx'
+import PlanViewToolbar from '../ui/PlanViewToolbar/PlanViewToolbar.jsx'
 import styles from './PlanPage.module.css'
 
-function todayISO() {
-  return new Date().toISOString().slice(0, 10)
-}
+/** 时间线左侧留白列（与静态原型一致，可删） */
+const TIMELINE_ANCHOR_DAY = '2026-04-09'
 
 export default function PlanPage() {
-  const [tasks, setTasks] = useState([])
-  const [title, setTitle] = useState('')
-  const [due, setDue] = useState(todayISO())
+  const [dash, setDash] = useState(null)
+  const [courses, setCourses] = useState([])
+  const [view, setView] = useState('timeline')
+  const [listFocus, setListFocus] = useState(null)
+  const [addOpen, setAddOpen] = useState(false)
+  const [addFormKey, setAddFormKey] = useState(0)
+  /** 新建任务后滚动时间线并高亮：{ token, date, onceTaskId? | recurringTemplateId? } */
+  const [timelineFocus, setTimelineFocus] = useState(null)
+
+  const reload = useCallback(async () => {
+    const next = await fetchPlanDashboard()
+    setDash(next)
+  }, [])
 
   useEffect(() => {
     let alive = true
-    listTasks().then((data) => {
-      if (alive) setTasks(data)
+    Promise.all([fetchPlanDashboard(), listCourses()]).then(([d, c]) => {
+      if (!alive) return
+      setDash(d)
+      setCourses(c)
     })
     return () => {
       alive = false
     }
   }, [])
 
+  const courseById = useMemo(() => new Map(courses.map((c) => [c.id, c])), [courses])
+
+  const timelineDays = useMemo(() => {
+    if (!dash) return []
+    return collectTimelineDates(
+      dash.onceTasks,
+      dash.recurringTemplates,
+      TIMELINE_ANCHOR_DAY,
+    )
+  }, [dash])
+
   const stats = useMemo(() => {
-    const total = tasks.length
-    const done = tasks.filter((t) => t.done).length
+    if (!dash) return { done: 0, total: 0, percent: 0, recurring: 0 }
+    const total = dash.onceTasks.length
+    const done = dash.onceTasks.filter((t) => t.done).length
     const percent = total === 0 ? 0 : Math.round((done / total) * 100)
-    return { total, done, percent }
-  }, [tasks])
+    return {
+      done,
+      total,
+      percent,
+      recurring: dash.recurringTemplates.length,
+    }
+  }, [dash])
 
-  async function onAdd(e) {
-    e.preventDefault()
-    const trimmed = title.trim()
-    if (!trimmed) return
-    const created = await addTask({ title: trimmed, due })
-    setTasks((prev) => [created, ...prev])
-    setTitle('')
+  const sortedOnce = useMemo(() => {
+    if (!dash) return []
+    return [...dash.onceTasks].sort(compareNewestWriteFirst)
+  }, [dash])
+
+  const sortedRecurring = useMemo(() => {
+    if (!dash) return []
+    return [...dash.recurringTemplates].sort(compareNewestWriteFirst)
+  }, [dash])
+
+  function courseTitle(id) {
+    if (!id) return ''
+    return courseById.get(id)?.title ?? ''
   }
 
-  async function onToggle(id) {
-    const updated = await toggleTaskDone(id)
-    if (!updated) return
-    setTasks((prev) => prev.map((t) => (t.id === id ? updated : t)))
+  function onOpenTaskInList(focus) {
+    setView('list')
+    setListFocus(focus)
   }
 
-  async function onDelete(id) {
-    const res = await deleteTask(id)
-    if (!res.deleted) return
-    setTasks((prev) => prev.filter((t) => t.id !== id))
+  function openAddModal() {
+    setAddFormKey((k) => k + 1)
+    setAddOpen(true)
   }
+
+  const clearTimelineFocus = useCallback(() => {
+    setTimelineFocus(null)
+  }, [])
+
+  async function onAddCreated(created) {
+    await reload()
+    setAddOpen(false)
+    setView('timeline')
+    if (created?.plannedDate) {
+      setTimelineFocus({
+        token: Date.now(),
+        date: created.plannedDate,
+        onceTaskId: created.id,
+      })
+    } else if (created?.recurringFrom) {
+      setTimelineFocus({
+        token: Date.now(),
+        date: created.recurringFrom,
+        recurringTemplateId: created.id,
+      })
+    }
+  }
+
+  if (!dash) {
+    return (
+      <section className={styles.page}>
+        <p className={styles.loading}>加载学习计划…</p>
+      </section>
+    )
+  }
+
+  const toolbarHint =
+    '配色标签用于区分任务类型；不设搜索与筛选。长期任务在「从 / 到」日期内每天都会出现在时间线中。'
 
   return (
-    <section>
-      <h1>学习计划</h1>
-      <p className={styles.subtle}>
-        已完成 {stats.done}/{stats.total}（{stats.percent}%）
-      </p>
-
-      <form onSubmit={onAdd} className={styles.form}>
-        <input
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="输入任务名称"
-          className={styles.titleInput}
+    <section className={styles.page}>
+      <PlanAddModal
+        open={addOpen}
+        onClose={() => setAddOpen(false)}
+        courses={courses}
+        onCreated={onAddCreated}
+        formKey={addFormKey}
+      />
+      <SurfaceCard>
+        <PlanPageHeader
+          title="学习计划"
+          subtitle={`已完成 ${stats.done} / ${stats.total}（${stats.percent}%）· 单次计划 · 长期模板 ${stats.recurring} 条`}
+          progressId="plan-progress-label"
+          percent={stats.percent}
         />
-        <input
-          type="date"
-          value={due}
-          onChange={(e) => setDue(e.target.value)}
-          className={styles.dateInput}
+        <PlanViewToolbar
+          view={view}
+          onViewChange={(next) => {
+            setView(next)
+            if (next !== 'timeline') setTimelineFocus(null)
+          }}
+          hint={toolbarHint}
+          onAdd={openAddModal}
         />
-        <button
-          type="submit"
-          className={styles.primaryBtn}
-        >
-          添加
-        </button>
-      </form>
 
-      <div className={styles.list}>
-        {tasks.map((t) => (
-          <div
-            key={t.id}
-            className={styles.task}
-          >
-            <div className={styles.taskMain}>
-              <div className={styles.taskTitle}>
-                {t.done ? '✅ ' : ''}{t.title}
-              </div>
-              <div className={styles.taskMeta}>
-                截止：{t.due}{t.doneAt ? ` · 完成：${t.doneAt}` : ''}
-              </div>
-            </div>
-            <div className={styles.taskActions}>
-              <button
-                type="button"
-                onClick={() => onToggle(t.id)}
-                className={styles.ghostBtn}
-              >
-                {t.done ? '取消完成' : '完成'}
-              </button>
-              <button
-                type="button"
-                onClick={() => onDelete(t.id)}
-                className={styles.dangerBtn}
-              >
-                删除
-              </button>
+        {view === 'timeline' ? (
+          <div className={styles.panel}>
+            <PlanTimeline
+              days={timelineDays}
+              onceTasks={dash.onceTasks}
+              recurringTemplates={dash.recurringTemplates}
+              checkins={dash.checkins}
+              recurringDayDone={dash.recurringDayDone}
+              courseById={courseById}
+              reload={reload}
+              onOpenTaskInList={onOpenTaskInList}
+              focusRequest={timelineFocus}
+              onFocusConsumed={clearTimelineFocus}
+            />
+          </div>
+        ) : (
+          <div className={styles.panel}>
+            {sortedRecurring.length > 0 ? (
+              <>
+                <p className={styles.listSectionHd}>长期 · 每日自动出现</p>
+                <div className={styles.listStack}>
+                  {sortedRecurring.map((r) => (
+                    <PlanRecurringTaskCard
+                      key={r.id}
+                      template={r}
+                      courseLabel={courseTitle(r.courseId)}
+                      highlightOpen={listFocus?.kind === 'recurring' && listFocus.id === r.id}
+                      onDelete={async (id) => {
+                        await deleteRecurringTemplate(id)
+                        await reload()
+                      }}
+                      onSaveNotes={async (notes) => {
+                        await updateRecurringNotes(r.id, notes)
+                        await reload()
+                      }}
+                    />
+                  ))}
+                </div>
+              </>
+            ) : null}
+
+            <p className={styles.listSectionHd}>单次计划</p>
+            <div className={styles.listStack}>
+              {sortedOnce.length === 0 ? (
+                <div className={styles.empty} role="status">
+                  暂无单次任务。点击工具栏「添加」创建，或添加长期日程。
+                </div>
+              ) : (
+                sortedOnce.map((t) => (
+                  <PlanOnceTaskCard
+                    key={t.id}
+                    task={t}
+                    courseLabel={courseTitle(t.courseId)}
+                    highlightOpen={listFocus?.kind === 'once' && listFocus.id === t.id}
+                    onToggleDone={async (id) => {
+                      await toggleOnceTaskDone(id)
+                      await reload()
+                    }}
+                    onDelete={async (id) => {
+                      await deleteOnceTask(id)
+                      await reload()
+                    }}
+                    onSaveNotes={async (notes) => {
+                      await updateOnceTaskNotes(t.id, notes)
+                      await reload()
+                    }}
+                  />
+                ))
+              )}
             </div>
           </div>
-        ))}
-        {tasks.length === 0 ? (
-          <div className={styles.subtle}>暂无任务，先添加一个吧。</div>
-        ) : null}
-      </div>
+        )}
+      </SurfaceCard>
     </section>
   )
 }
-

@@ -1,0 +1,31 @@
+.root {
+  display: inline-flex;
+  padding: 3px;
+  border-radius: var(--radius-12);
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  gap: 3px;
+}
+
+.btn {
+  border: 0;
+  background: transparent;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: var(--text-14);
+  font-weight: 700;
+  color: var(--color-text-dim);
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.btn[aria-pressed='true'] {
+  background: var(--color-surface);
+  color: var(--color-text-strong);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12);
+}
+
+.btn:focus-visible {
+  outline: none;
+  box-shadow: var(--ring-focus);
+}

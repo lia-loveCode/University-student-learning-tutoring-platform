@@ -1,0 +1,563 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>课程模块 · 布局与样式预览（临时）</title>
+    <style>
+      :root {
+        --bg-page: #f3f5f8;
+        --bg-card: #fff;
+        --border: #e2e8f0;
+        --text: #0f172a;
+        --text-muted: #64748b;
+        --text-dim: #475569;
+        --brand: #2563eb;
+        --brand-soft: #eff6ff;
+        --star: #f59e0b;
+        --radius: 14px;
+        --shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, "PingFang SC",
+          "Hiragino Sans GB", "Microsoft Yahei", sans-serif;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg-page);
+        color: var(--text);
+        line-height: 1.5;
+      }
+      .preview-note {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 12px 16px 0;
+        font-size: 12px;
+        color: var(--text-muted);
+      }
+      .screens {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 16px 16px 48px;
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+      }
+      .screen-label {
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        margin-bottom: 8px;
+      }
+      .card-shell {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+      /* —— 列表页 —— */
+      .page-list {
+        padding: 0;
+      }
+      .region-page-header {
+        padding: 20px 20px 16px;
+        border-bottom: 1px solid var(--border);
+        background: linear-gradient(180deg, #fbfdff 0%, #fff 100%);
+      }
+      .page-title {
+        margin: 0 0 8px;
+        font-size: 22px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+      }
+      .page-hint {
+        margin: 0;
+        font-size: 13px;
+        color: var(--text-dim);
+      }
+      .region-course-list {
+        padding: 12px 12px 16px;
+      }
+      .region-controls {
+        padding: 12px 12px 0;
+      }
+      .controls-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+      .control-row {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+      @media (min-width: 640px) {
+        .controls-grid {
+          grid-template-columns: 1fr;
+        }
+        .control-row {
+          grid-template-columns: 1.2fr 0.9fr 0.9fr auto;
+          align-items: center;
+        }
+      }
+      .field {
+        position: relative;
+      }
+      .dropdown {
+        position: relative;
+      }
+      .dropdown-trigger {
+        display: inline-flex;
+        width: 100%;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 0 12px;
+        height: 40px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: #fff;
+        cursor: pointer;
+        font-size: 14px;
+        color: var(--text);
+      }
+      .dropdown-trigger:focus {
+        outline: none;
+        border-color: #bfdbfe;
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+      }
+      .chev {
+        width: 0;
+        height: 0;
+        border-left: 5px solid transparent;
+        border-right: 5px solid transparent;
+        border-top: 6px solid #94a3b8;
+        opacity: 0.95;
+      }
+      .dropdown-panel {
+        display: none;
+      }
+      .dropdown[data-open="true"] .dropdown-panel {
+        display: block;
+      }
+      .menu-item {
+        width: 100%;
+        text-align: left;
+        border: 0;
+        background: transparent;
+        cursor: pointer;
+        padding: 10px 10px;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text);
+      }
+      .menu-item:hover {
+        background: #f8fafc;
+      }
+      .menu-item[aria-selected="true"] {
+        background: #3b82f6;
+        color: #fff;
+      }
+      .inline-filters {
+        margin-top: 10px;
+        padding: 10px 12px;
+        border: 1px dashed #cbd5e1;
+        border-radius: 12px;
+        background: #fbfdff;
+      }
+      .inline-filters-hd {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+      .inline-filters-hd strong {
+        font-size: 12px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+      }
+      .inline-filters-hd span {
+        font-size: 12px;
+        color: var(--text-muted);
+      }
+      .filter-block {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 10px;
+      }
+      .filter-label {
+        font-size: 12px;
+        color: var(--text-muted);
+        font-weight: 700;
+      }
+      .pills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .pill {
+        height: 30px;
+        padding: 0 10px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: #fff;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--text);
+      }
+      .pill[data-active="true"] {
+        border-color: #bfdbfe;
+        background: var(--brand-soft);
+        color: #1e3a8a;
+      }
+      .input,
+      .select {
+        width: 100%;
+        height: 40px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: #fff;
+        padding: 0 12px;
+        font-size: 14px;
+        color: var(--text);
+        outline: none;
+      }
+      .input::placeholder {
+        color: #94a3b8;
+      }
+      .input:focus,
+      .select:focus {
+        border-color: #bfdbfe;
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+      }
+      .btn {
+        height: 40px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: #fff;
+        padding: 0 12px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        color: var(--text);
+      }
+      .btn-primary {
+        border-color: #bfdbfe;
+        background: #2563eb;
+        color: #fff;
+      }
+      .btn-ghost:hover {
+        background: #f8fafc;
+      }
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        height: 30px;
+        padding: 0 10px;
+        border-radius: 999px;
+        border: 1px solid #dbeafe;
+        background: var(--brand-soft);
+        color: #1e3a8a;
+        font-size: 12px;
+        font-weight: 600;
+      }
+      .chip .x {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 18px;
+        height: 18px;
+        border-radius: 999px;
+        background: rgba(30, 58, 138, 0.12);
+        font-weight: 900;
+        line-height: 1;
+      }
+      .result-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 4px 0;
+        color: var(--text-muted);
+        font-size: 12px;
+      }
+      .result-bar strong {
+        color: var(--text);
+      }
+      .list-stack {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .course-row {
+        display: block;
+        padding: 14px 16px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: #fff;
+        text-decoration: none;
+        color: inherit;
+        transition: border-color 0.15s, box-shadow 0.15s;
+      }
+      .course-row:hover {
+        border-color: #c7d2fe;
+        box-shadow: 0 4px 14px rgba(37, 99, 235, 0.08);
+      }
+      .course-row-title {
+        font-size: 15px;
+        font-weight: 600;
+        margin: 0 0 6px;
+      }
+      .course-row-meta {
+        font-size: 12px;
+        color: var(--text-muted);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px 12px;
+        align-items: center;
+      }
+      .dot {
+        opacity: 0.45;
+      }
+      /* —— 详情页 —— */
+      .page-detail {
+        padding: 0;
+      }
+      .region-back-bar {
+        padding: 14px 20px;
+        border-bottom: 1px solid var(--border);
+        background: #fbfdff;
+      }
+      .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 14px;
+        color: var(--brand);
+        text-decoration: none;
+        font-weight: 500;
+      }
+      .back-link:hover {
+        text-decoration: underline;
+      }
+      .region-detail-body {
+        padding: 20px 20px 24px;
+      }
+      .detail-heading {
+        margin: 0 0 12px;
+        font-size: 20px;
+        font-weight: 700;
+        line-height: 1.35;
+      }
+      .meta-line {
+        font-size: 13px;
+        color: var(--text-dim);
+        margin: 0 0 20px;
+        padding: 10px 12px;
+        background: var(--brand-soft);
+        border-radius: 10px;
+        border: 1px solid #dbeafe;
+      }
+      .meta-line .star {
+        color: var(--star);
+      }
+      .region-summary h2 {
+        margin: 0 0 8px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--text-muted);
+      }
+      .summary-text {
+        margin: 0;
+        font-size: 15px;
+        color: var(--text);
+        white-space: pre-wrap;
+      }
+      /* —— 空状态 —— */
+      .region-empty {
+        padding: 48px 24px;
+        text-align: center;
+        color: var(--text-muted);
+        font-size: 14px;
+      }
+      @media (min-width: 640px) {
+        .list-stack {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 12px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <p class="preview-note">
+      临时预览：用于确认课程列表 / 详情 / 空状态的区块划分与视觉风格；确认后可按下方「模块拆分」映射到组件文件。
+    </p>
+
+    <div class="screens">
+      <section aria-labelledby="lbl-list">
+        <div class="screen-label" id="lbl-list">列表页 · /courses</div>
+        <div class="card-shell page-list">
+          <!-- region: PageHeader -->
+          <header class="region-page-header">
+            <h1 class="page-title">课程列表</h1>
+            <p class="page-hint">
+              后续可接筛选与搜索；当前使用本地 Mock 数据。
+            </p>
+          </header>
+          <!-- region: Search + Filters -->
+          <div class="region-controls" aria-label="搜索与筛选（mockup）">
+            <div class="controls-grid">
+              <div class="control-row">
+                <div class="field">
+                  <input
+                    class="input"
+                    placeholder="搜索课程标题 / 作者 / 分类…"
+                    value=""
+                  />
+                </div>
+                <div class="dropdown" aria-label="分类（3D 内联示意）">
+                  <button class="dropdown-trigger" type="button" disabled>
+                    <span>分类：内联选择</span>
+                    <span class="chev" aria-hidden="true"></span>
+                  </button>
+                </div>
+                <div class="dropdown" aria-label="难度（3D 内联示意）">
+                  <button class="dropdown-trigger" type="button" disabled>
+                    <span>难度：内联选择</span>
+                    <span class="chev" aria-hidden="true"></span>
+                  </button>
+                </div>
+                <button class="btn btn-ghost" type="button">重置</button>
+              </div>
+
+              <div class="result-bar">
+                <div>
+                  共 <strong>2</strong> 门课程（展示为 mock 数据）
+                </div>
+                <div class="chips" aria-label="已选条件（示例）">
+                  <span class="chip">分类：计算机 <span class="x">×</span></span>
+                  <span class="chip">难度：入门 <span class="x">×</span></span>
+                </div>
+              </div>
+
+              <!-- 3D：当结果 N ≤ 3 时，直接内联展示可选项，不弹下拉 -->
+              <div class="inline-filters" aria-label="内联筛选（3D）">
+                <div class="inline-filters-hd">
+                  <strong>Filters</strong>
+                  <span>结果较少（N ≤ 3）→ 内联选择</span>
+                </div>
+
+                <div class="filter-block" aria-label="分类内联选择">
+                  <div class="filter-label">分类</div>
+                  <div class="pills">
+                    <button class="pill" type="button" data-active="false">全部</button>
+                    <button class="pill" type="button" data-active="true">计算机</button>
+                    <button class="pill" type="button" data-active="false">考研</button>
+                    <button class="pill" type="button" data-active="false">英语</button>
+                  </div>
+                </div>
+
+                <div class="filter-block" aria-label="难度内联选择">
+                  <div class="filter-label">难度</div>
+                  <div class="pills">
+                    <button class="pill" type="button" data-active="false">全部</button>
+                    <button class="pill" type="button" data-active="true">入门</button>
+                    <button class="pill" type="button" data-active="false">进阶</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- region: CourseList -->
+          <div class="region-course-list">
+            <div class="list-stack">
+              <a class="course-row" href="#">
+                <p class="course-row-title">TypeScript 入门到实践</p>
+                <div class="course-row-meta">
+                  <span>计算机</span><span class="dot">·</span><span>入门</span
+                  ><span class="dot">·</span><span>★ 4.8</span
+                  ><span class="dot">·</span><span>1.2k 学习</span>
+                </div>
+              </a>
+              <a class="course-row" href="#">
+                <p class="course-row-title">考研英语长难句精讲</p>
+                <div class="course-row-meta">
+                  <span>考研</span><span class="dot">·</span><span>进阶</span
+                  ><span class="dot">·</span><span>★ 4.6</span
+                  ><span class="dot">·</span><span>856 学习</span>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="lbl-detail">
+        <div class="screen-label" id="lbl-detail">详情页 · /courses/:id</div>
+        <div class="card-shell page-detail">
+          <!-- region: BackLink -->
+          <div class="region-back-bar">
+            <a class="back-link" href="#">← 返回课程列表</a>
+          </div>
+          <div class="region-detail-body">
+            <!-- region: CourseDetailHeader + Meta -->
+            <h1 class="detail-heading">TypeScript 入门到实践</h1>
+            <p class="meta-line">
+              计算机 · 入门 · 上传：张老师 · <span class="star">★</span> 4.8 · 学习
+              1200
+            </p>
+            <!-- region: CourseSummary -->
+            <div class="region-summary">
+              <h2>简介</h2>
+              <p class="summary-text">
+                本课程从类型系统基础讲起，涵盖泛型、工具类型与工程化实践，适合有一定 JavaScript 基础的开发者。
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="lbl-empty">
+        <div class="screen-label" id="lbl-empty">详情页 · 加载 / 未找到</div>
+        <div class="card-shell page-detail">
+          <div class="region-back-bar">
+            <a class="back-link" href="#">← 返回课程列表</a>
+          </div>
+          <div class="region-empty" role="status">
+            未找到课程或正在加载…
+          </div>
+        </div>
+      </section>
+    </div>
+    <script>
+      (function () {
+        // 仅用于 mockup：内联 pills 的高亮切换
+        document.addEventListener("click", (e) => {
+          const pill = e.target.closest(".pill");
+          if (!pill) return;
+          const group = pill.closest(".pills");
+          if (!group) return;
+          group.querySelectorAll(".pill").forEach((p) => (p.dataset.active = p === pill ? "true" : "false"));
+        });
+      })();
+    </script>
+  </body>
+</html>
