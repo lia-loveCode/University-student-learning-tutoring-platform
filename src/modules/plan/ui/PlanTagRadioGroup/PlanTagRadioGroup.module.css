@@ -1,0 +1,25 @@
+.root {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-10);
+  align-items: center;
+}
+
+.opt {
+  border: 2px solid transparent;
+  border-radius: var(--radius-pill);
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+}
+
+.opt:focus-visible {
+  outline: none;
+  box-shadow: var(--ring-focus);
+}
+
+.opt[aria-checked='true'] {
+  box-shadow: 0 0 0 2px var(--color-primary);
+  border-radius: var(--radius-pill);
+}

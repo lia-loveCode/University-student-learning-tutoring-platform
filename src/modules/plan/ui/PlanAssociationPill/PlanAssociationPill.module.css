@@ -1,0 +1,63 @@
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: var(--space-12);
+  padding: 5px 11px;
+  border-radius: var(--radius-8);
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  font-size: var(--text-12);
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.innerLink {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.innerLink:hover {
+  text-decoration: underline;
+}
+
+/* 外部链接：与表单选框一致的浅蓝描边 */
+.pillLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: var(--space-12);
+  padding: 5px 11px;
+  border-radius: var(--radius-12);
+  background: #fbfdff;
+  border: 1px solid rgba(22, 119, 255, 0.28);
+  font-size: var(--text-12);
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.extLink {
+  color: var(--color-primary);
+  text-decoration: none;
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.extLink:hover {
+  text-decoration: underline;
+}
+
+.extFallback {
+  color: var(--color-text-dim);
+  font-weight: 600;
+}
+
+.muted {
+  display: inline-block;
+  margin-top: var(--space-12);
+  font-size: var(--text-12);
+  font-weight: 700;
+  color: var(--color-text-dim);
+}

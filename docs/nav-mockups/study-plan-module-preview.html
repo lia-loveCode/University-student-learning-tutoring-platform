@@ -1,0 +1,1406 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>学习计划模块 · 静态原型（日程时间线 / 打卡 / 奖励）</title>
+    <style>
+      :root {
+        --bg-page: #f3f5f8;
+        --bg-card: #fff;
+        --border: #e2e8f0;
+        --text: #0f172a;
+        --text-muted: #64748b;
+        --text-dim: #475569;
+        --brand: #2563eb;
+        --brand-soft: #eff6ff;
+        --success: #16a34a;
+        --success-soft: #ecfdf5;
+        --danger: #dc2626;
+        --danger-soft: #fef2f2;
+        --tag-purple: #ede9fe;
+        --tag-purple-text: #5b21b6;
+        --tag-teal: #ccfbf1;
+        --tag-teal-text: #0f766e;
+        --tag-amber: #fef3c7;
+        --tag-amber-text: #b45309;
+        --radius: 14px;
+        --shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+        --nav-bg: #0f172a;
+        --nav-text: #e2e8f0;
+        --line: #cbd5e1;
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, "PingFang SC",
+          "Hiragino Sans GB", "Microsoft Yahei", sans-serif;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg-page);
+        color: var(--text);
+        line-height: 1.5;
+      }
+      .preview-note {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 12px 16px 0;
+        font-size: 12px;
+        color: var(--text-muted);
+      }
+      .shell {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 16px 16px 48px;
+      }
+      .mock-nav {
+        background: var(--nav-bg);
+        color: var(--nav-text);
+        border-radius: var(--radius);
+        padding: 12px 16px;
+        margin-bottom: 16px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px 16px;
+        font-size: 13px;
+        box-shadow: var(--shadow);
+      }
+      .mock-nav-brand {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 700;
+      }
+      .mock-nav-brand span {
+        opacity: 0.85;
+        font-weight: 500;
+        font-size: 12px;
+      }
+      .mock-nav-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .mock-nav-links a {
+        color: #94a3b8;
+        text-decoration: none;
+        padding: 6px 10px;
+        border-radius: 8px;
+      }
+      .mock-nav-links a:hover {
+        color: #fff;
+        background: rgba(255, 255, 255, 0.08);
+      }
+      .mock-nav-links a.is-active {
+        color: #fff;
+        background: rgba(37, 99, 235, 0.45);
+      }
+      .card-shell {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+      .region-page-header {
+        padding: 20px 20px 16px;
+        border-bottom: 1px solid var(--border);
+        background: linear-gradient(180deg, #fbfdff 0%, #fff 100%);
+      }
+      .page-title {
+        margin: 0 0 8px;
+        font-size: 22px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+      }
+      .progress-line {
+        margin: 0;
+        font-size: 14px;
+        color: var(--text-dim);
+      }
+      .progress-line strong {
+        color: var(--text);
+      }
+      .progress-bar {
+        margin-top: 10px;
+        height: 8px;
+        border-radius: 999px;
+        background: #e2e8f0;
+        overflow: hidden;
+      }
+      .progress-bar > i {
+        display: block;
+        height: 100%;
+        width: 40%;
+        border-radius: 999px;
+        background: linear-gradient(90deg, #3b82f6, #2563eb);
+      }
+      .toolbar {
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: center;
+        justify-content: space-between;
+        background: #fafbfc;
+      }
+      .seg {
+        display: inline-flex;
+        padding: 3px;
+        border-radius: 12px;
+        background: #e2e8f0;
+        gap: 3px;
+      }
+      .seg button {
+        border: 0;
+        background: transparent;
+        padding: 8px 14px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--text-muted);
+        cursor: pointer;
+      }
+      .seg button[aria-pressed="true"] {
+        background: #fff;
+        color: var(--text);
+        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12);
+      }
+      .toolbar-hint {
+        font-size: 12px;
+        color: var(--text-muted);
+        max-width: 480px;
+      }
+      .region-add {
+        padding: 14px 16px 16px;
+        border-bottom: 1px solid var(--border);
+      }
+      .add-grid {
+        display: grid;
+        gap: 10px;
+        grid-template-columns: 1fr;
+      }
+      @media (min-width: 800px) {
+        .add-grid {
+          grid-template-columns: 1.35fr 0.95fr 0.95fr 1.05fr;
+          align-items: end;
+        }
+        .add-row-wide {
+          grid-column: 1 / -1;
+        }
+      }
+      .field label {
+        display: block;
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--text-muted);
+        margin-bottom: 4px;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+      .input,
+      .select {
+        width: 100%;
+        height: 40px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: #fff;
+        padding: 0 12px;
+        font-size: 14px;
+        color: var(--text);
+        outline: none;
+      }
+      .input:focus,
+      .select:focus {
+        border-color: #bfdbfe;
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+      }
+      .tag-assign {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+      }
+      .tag-assign > span {
+        font-size: 11px;
+        color: var(--text-muted);
+        font-weight: 700;
+        margin-right: 4px;
+        width: 100%;
+      }
+      @media (min-width: 800px) {
+        .tag-assign > span {
+          width: auto;
+          margin-right: 8px;
+        }
+      }
+      .tag-opt {
+        font-size: 12px;
+        font-weight: 800;
+        padding: 7px 12px;
+        border-radius: 999px;
+        border: 2px solid transparent;
+        cursor: pointer;
+        color: #0f172a;
+      }
+      .tag-opt[data-on="true"] {
+        box-shadow: 0 0 0 2px #2563eb;
+      }
+      .tag-opt--hw {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+      .tag-opt--exam {
+        background: var(--tag-amber);
+        color: var(--tag-amber-text);
+      }
+      .tag-opt--rev {
+        background: var(--tag-teal);
+        color: var(--tag-teal-text);
+      }
+      .tag-opt--code {
+        background: var(--tag-purple);
+        color: var(--tag-purple-text);
+      }
+      .tag-opt--proj {
+        background: #e0e7ff;
+        color: #3730a3;
+      }
+      .tag-opt--habit {
+        background: #dcfce7;
+        color: #166534;
+      }
+      .long-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px 20px;
+        align-items: center;
+        padding: 10px 12px;
+        border-radius: 12px;
+        border: 1px dashed #cbd5e1;
+        background: #f8fafc;
+      }
+      .long-row label {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--text-dim);
+        cursor: pointer;
+      }
+      .long-row input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+        accent-color: var(--brand);
+      }
+      .long-end {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+      }
+      .long-end .field {
+        margin: 0;
+        min-width: 160px;
+      }
+      .long-end label {
+        text-transform: none;
+        letter-spacing: 0;
+        font-size: 11px;
+      }
+      .btn {
+        height: 40px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: #fff;
+        padding: 0 14px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        color: var(--text);
+      }
+      .btn-primary {
+        border-color: #bfdbfe;
+        background: var(--brand);
+        color: #fff;
+      }
+      .btn-ghost:hover {
+        background: #f8fafc;
+      }
+      .btn-sm {
+        height: 34px;
+        padding: 0 10px;
+        font-size: 13px;
+      }
+      .btn-danger-outline {
+        border-color: #fecaca;
+        color: var(--danger);
+        background: #fff;
+      }
+      .btn-success-outline {
+        border-color: #bbf7d0;
+        color: var(--success);
+        background: #fff;
+      }
+      .btn-checkin {
+        height: 32px;
+        padding: 0 12px;
+        border-radius: 999px;
+        border: 1px solid #c7d2fe;
+        background: #fff;
+        font-size: 12px;
+        font-weight: 800;
+        color: #3730a3;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+      .btn-checkin:hover {
+        background: #eef2ff;
+      }
+      .btn-checkin[data-done="true"] {
+        background: var(--success-soft);
+        border-color: #86efac;
+        color: #166534;
+      }
+      .region-body {
+        padding: 14px 16px 20px;
+      }
+      .view-panel[hidden] {
+        display: none !important;
+      }
+      .task-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .list-section-hd {
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        margin: 6px 2px 4px;
+      }
+      .task-card {
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        background: #fff;
+        overflow: hidden;
+        transition: border-color 0.15s, box-shadow 0.15s;
+      }
+      .task-card:hover {
+        border-color: #c7d2fe;
+        box-shadow: 0 4px 14px rgba(37, 99, 235, 0.06);
+      }
+      .task-card.is-done {
+        opacity: 0.92;
+        background: #fafafa;
+      }
+      .task-card.is-done .task-title {
+        text-decoration: line-through;
+        color: var(--text-muted);
+      }
+      .task-card.is-recurring {
+        border-left: 4px solid #8b5cf6;
+      }
+      .task-hd {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 10px;
+        align-items: start;
+        padding: 14px 14px 12px;
+      }
+      @media (min-width: 640px) {
+        .task-hd {
+          grid-template-columns: 1fr auto auto;
+        }
+      }
+      .task-main {
+        min-width: 0;
+      }
+      .task-title {
+        margin: 0 0 6px;
+        font-size: 15px;
+        font-weight: 700;
+      }
+      .task-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px 12px;
+        font-size: 12px;
+        color: var(--text-muted);
+        align-items: center;
+      }
+      .badge-plan {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 2px 8px;
+        border-radius: 999px;
+        background: var(--brand-soft);
+        border: 1px solid #dbeafe;
+        color: #1e40af;
+        font-weight: 700;
+        font-size: 11px;
+      }
+      .badge-slot {
+        font-size: 11px;
+        font-weight: 700;
+        color: #0369a1;
+        background: #e0f2fe;
+        padding: 2px 8px;
+        border-radius: 999px;
+      }
+      .badge-daily {
+        font-size: 11px;
+        font-weight: 800;
+        color: #5b21b6;
+        background: #ede9fe;
+        padding: 2px 8px;
+        border-radius: 999px;
+      }
+      .badge-due {
+        font-weight: 600;
+        color: var(--text-dim);
+      }
+      .badge-due.is-late {
+        color: var(--danger);
+        font-weight: 700;
+      }
+      .course-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        max-width: 100%;
+        padding: 2px 8px;
+        border-radius: 8px;
+        background: #f1f5f9;
+        border: 1px solid #e2e8f0;
+        font-size: 11px;
+        font-weight: 700;
+        color: #334155;
+        margin-top: 6px;
+      }
+      .course-pill a {
+        color: var(--brand);
+        text-decoration: none;
+      }
+      .course-pill a:hover {
+        text-decoration: underline;
+      }
+      .tag-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 8px;
+      }
+      .tag {
+        font-size: 11px;
+        font-weight: 700;
+        padding: 3px 8px;
+        border-radius: 999px;
+      }
+      .tag--exam {
+        background: var(--tag-amber);
+        color: var(--tag-amber-text);
+      }
+      .tag--code {
+        background: var(--tag-purple);
+        color: var(--tag-purple-text);
+      }
+      .tag--hw {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+      .tag--rev {
+        background: var(--tag-teal);
+        color: var(--tag-teal-text);
+      }
+      .tag--proj {
+        background: #e0e7ff;
+        color: #3730a3;
+      }
+      .tag--habit {
+        background: #dcfce7;
+        color: #166534;
+      }
+      .task-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: flex-end;
+      }
+      .expand-toggle {
+        grid-column: 1 / -1;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 14px 10px;
+      }
+      @media (min-width: 640px) {
+        .expand-toggle {
+          grid-column: auto;
+          padding: 14px 14px 12px 0;
+          align-self: stretch;
+          justify-content: center;
+          flex-direction: column;
+        }
+      }
+      .expand-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        border: 0;
+        background: transparent;
+        color: var(--brand);
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        padding: 4px 0;
+      }
+      .expand-btn .chev {
+        transition: transform 0.2s;
+      }
+      .task-card[data-open="true"] .expand-btn .chev {
+        transform: rotate(180deg);
+      }
+      .task-detail {
+        border-top: 1px dashed #e2e8f0;
+        padding: 12px 14px 14px;
+        background: #fbfdff;
+        display: none;
+      }
+      .task-card[data-open="true"] .task-detail {
+        display: block;
+      }
+      .detail-grid {
+        display: grid;
+        gap: 12px;
+        grid-template-columns: 1fr;
+      }
+      @media (min-width: 720px) {
+        .detail-grid {
+          grid-template-columns: 1.2fr 0.9fr;
+        }
+      }
+      .detail-block h3 {
+        margin: 0 0 6px;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+      }
+      .notes-mock {
+        width: 100%;
+        min-height: 88px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        padding: 10px 12px;
+        font-size: 13px;
+        color: var(--text-dim);
+        background: #fff;
+        resize: vertical;
+      }
+      .subtasks {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .subtasks li {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        font-size: 13px;
+        color: var(--text);
+      }
+      .subtasks input {
+        margin-top: 3px;
+      }
+      .feature-callout {
+        margin-top: 10px;
+        padding: 10px 12px;
+        border-radius: 12px;
+        border: 1px solid #c7d2fe;
+        background: linear-gradient(135deg, #eef2ff 0%, #eff6ff 100%);
+        font-size: 12px;
+        color: #312e81;
+      }
+      .feature-callout strong {
+        display: block;
+        margin-bottom: 4px;
+        font-size: 11px;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: #4338ca;
+      }
+      /* 时间线：竖向连线 + 日列 */
+      .timeline-wrap {
+        overflow-x: auto;
+        padding-bottom: 6px;
+      }
+      .timeline {
+        display: flex;
+        gap: 12px;
+        min-width: min-content;
+        padding: 4px 2px 8px;
+      }
+      .day-col {
+        flex: 0 0 232px;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        background: #fff;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+      .day-col-hd {
+        padding: 10px 12px;
+        background: linear-gradient(180deg, #f8fafc 0%, #fff 100%);
+        border-bottom: 1px solid var(--border);
+      }
+      .day-col-hd-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 8px;
+      }
+      .day-col-hd time {
+        display: block;
+        font-size: 13px;
+        font-weight: 800;
+        color: var(--text);
+      }
+      .day-col-hd .week {
+        font-size: 11px;
+        color: var(--text-muted);
+        font-weight: 600;
+      }
+      .day-reward {
+        margin-top: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        color: #a16207;
+        background: #fffbeb;
+        border: 1px solid #fde68a;
+        border-radius: 10px;
+        padding: 8px 10px;
+        display: none;
+      }
+      .day-reward[data-show="true"] {
+        display: block;
+      }
+      .day-reward .emoji {
+        margin-right: 4px;
+      }
+      .day-col-body {
+        padding: 10px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        min-height: 140px;
+        position: relative;
+      }
+      .tl-stack {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .tl-stack::before {
+        content: "";
+        position: absolute;
+        left: 22px;
+        top: 18px;
+        bottom: 52px;
+        width: 2px;
+        background: linear-gradient(180deg, var(--line), transparent);
+        border-radius: 2px;
+        pointer-events: none;
+      }
+      .tl-card {
+        position: relative;
+        border-radius: 12px;
+        border: 1px solid #e2e8f0;
+        padding: 10px 10px 10px 14px;
+        margin-left: 18px;
+        background: #fff;
+        cursor: pointer;
+        text-align: left;
+        font: inherit;
+        color: inherit;
+        box-shadow: 0 1px 0 rgba(15, 23, 42, 0.04);
+      }
+      .tl-card::before {
+        content: "";
+        position: absolute;
+        left: -11px;
+        top: 14px;
+        width: 10px;
+        height: 10px;
+        border-radius: 999px;
+        background: #fff;
+        border: 2px solid var(--brand);
+        box-shadow: 0 0 0 2px #e0e7ff;
+      }
+      .tl-card:hover {
+        border-color: #bfdbfe;
+        box-shadow: 0 4px 14px rgba(37, 99, 235, 0.1);
+      }
+      .tl-card.is-daily {
+        border-color: #ddd6fe;
+        background: linear-gradient(135deg, #faf5ff 0%, #fff 55%);
+      }
+      .tl-card.is-daily::before {
+        border-color: #7c3aed;
+        box-shadow: 0 0 0 2px #ede9fe;
+      }
+      .tl-card strong {
+        display: block;
+        font-size: 13px;
+        margin-bottom: 4px;
+      }
+      .tl-card .slot-line {
+        font-size: 11px;
+        font-weight: 700;
+        color: #0369a1;
+        margin-bottom: 6px;
+      }
+      .tl-card .mini {
+        font-size: 11px;
+        color: var(--text-muted);
+      }
+      .empty-day {
+        font-size: 12px;
+        color: var(--text-muted);
+        text-align: center;
+        padding: 28px 8px;
+        margin-left: 18px;
+      }
+      .add-actions {
+        display: flex;
+        justify-content: flex-end;
+      }
+      @media (min-width: 800px) {
+        .add-actions {
+          grid-column: 4;
+          align-self: end;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <p class="preview-note">
+      静态原型（仅 HTML/本文件）：无搜索、无筛选条。时间线强调「哪一天 / 什么时段做什么」；长期任务在区间内每日自动出现；每日打卡与完成奖励为前端示意，确认视觉后再改项目代码。
+    </p>
+
+    <div class="shell">
+      <nav class="mock-nav" aria-label="全局导航（示意）">
+        <div class="mock-nav-brand" aria-hidden="true">
+          学习辅导平台 <span>University Study</span>
+        </div>
+        <div class="mock-nav-links">
+          <a href="#">首页</a>
+          <a href="courses-module-preview.html">课程</a>
+          <a href="#" class="is-active" aria-current="page">学习计划</a>
+          <a href="#">学习进度</a>
+          <a href="#">提问</a>
+          <a href="#">个人中心</a>
+        </div>
+      </nav>
+
+      <div class="card-shell">
+        <header class="region-page-header">
+          <h1 class="page-title">学习计划</h1>
+          <p class="progress-line">
+            今日进度与打卡为示意 · 时间线 = 按天的「日程轴」+ 长期任务每日自动出现
+          </p>
+          <div class="progress-bar" aria-hidden="true"><i style="width: 40%"></i></div>
+        </header>
+
+        <div class="toolbar">
+          <div class="seg" role="group" aria-label="视图切换">
+            <button type="button" id="btn-timeline" aria-pressed="true">时间线</button>
+            <button type="button" id="btn-list" aria-pressed="false">列表</button>
+          </div>
+          <p class="toolbar-hint">
+            配色标签用于区分任务类型；不设搜索/筛选。长期任务在「开始～结束」日期内每天都会出现在时间线中。
+          </p>
+        </div>
+
+        <section class="region-add" aria-label="新建任务（示意）">
+          <div class="add-grid">
+            <div class="field">
+              <label for="t-title">任务名称</label>
+              <input
+                id="t-title"
+                class="input"
+                type="text"
+                placeholder="例如：完成第三章习题"
+              />
+            </div>
+            <div class="field">
+              <label for="t-plan">计划做日期</label>
+              <input id="t-plan" class="input" type="date" value="2026-04-12" />
+            </div>
+            <div class="field">
+              <label for="t-slot">时段（可选）</label>
+              <select id="t-slot" class="select">
+                <option value="">不指定</option>
+                <option>早晨</option>
+                <option>上午</option>
+                <option>下午</option>
+                <option>晚上</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="t-course">关联课程</label>
+              <select id="t-course" class="select">
+                <option value="">不关联</option>
+                <option value="web">Web 前端开发</option>
+                <option value="ds">数据结构与算法</option>
+                <option value="math">高等数学</option>
+                <option value="eng">大学英语</option>
+              </select>
+            </div>
+            <div class="field add-row-wide">
+              <label>标签配色（单选）</label>
+              <div class="tag-assign" id="tag-assign" role="radiogroup" aria-label="任务标签">
+                <button type="button" class="tag-opt tag-opt--hw" data-on="false" data-tag="作业">
+                  作业
+                </button>
+                <button type="button" class="tag-opt tag-opt--exam" data-on="true" data-tag="考试">
+                  考试
+                </button>
+                <button type="button" class="tag-opt tag-opt--rev" data-on="false" data-tag="复习">
+                  复习
+                </button>
+                <button type="button" class="tag-opt tag-opt--code" data-on="false" data-tag="编程">
+                  编程
+                </button>
+                <button type="button" class="tag-opt tag-opt--proj" data-on="false" data-tag="项目">
+                  项目
+                </button>
+                <button type="button" class="tag-opt tag-opt--habit" data-on="false" data-tag="习惯">
+                  习惯
+                </button>
+              </div>
+            </div>
+            <div class="field">
+              <label for="t-due">截止日期（可选）</label>
+              <input id="t-due" class="input" type="date" value="2026-04-14" />
+            </div>
+            <div class="add-actions">
+              <button type="button" class="btn btn-primary" style="min-width: 120px">添加</button>
+            </div>
+            <div class="add-row-wide long-row">
+              <label>
+                <input type="checkbox" id="t-long" checked disabled />
+                长期任务：每天在时间线自动出现
+              </label>
+              <div class="long-end">
+                <div class="field">
+                  <label for="t-from">从</label>
+                  <input id="t-from" class="input" type="date" value="2026-04-10" />
+                </div>
+                <div class="field">
+                  <label for="t-to">到</label>
+                  <input id="t-to" class="input" type="date" value="2026-04-13" />
+                </div>
+              </div>
+              <span style="font-size: 12px; color: var(--text-muted); width: 100%"
+                >勾选并填写区间后，系统会为区间内每一天生成同一条日程（示意）。</span
+              >
+            </div>
+          </div>
+        </section>
+
+        <div class="region-body view-panel" id="panel-timeline" role="tabpanel">
+          <div class="timeline-wrap">
+            <div class="timeline" id="timeline-root"></div>
+          </div>
+        </div>
+
+        <div class="region-body view-panel" id="panel-list" role="tabpanel" hidden>
+          <div class="task-list" id="task-list-root"></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        const recurringTemplates = [
+          {
+            id: "daily-1",
+            title: "背单词 30 个 · 听力 10 分钟",
+            slot: "早晨 · 约 25 分钟",
+            from: "2026-04-10",
+            to: "2026-04-13",
+            course: { id: "eng", name: "大学英语" },
+            tags: ["习惯"],
+            notes: "长期习惯：APP 打卡；完成即算当日词汇进度。",
+            subtasks: [
+              { id: "d1", label: "单词 30 个", done: false },
+              { id: "d2", label: "精听 1 篇", done: false },
+            ],
+          },
+        ];
+
+        const tasks = [
+          {
+            id: "1",
+            title: "完成 React 路由练习",
+            planned: "2026-04-10",
+            slot: "下午",
+            due: "2026-04-12",
+            done: false,
+            course: { id: "web", name: "Web 前端开发" },
+            tags: ["编程"],
+            notes: "嵌套路由 + 懒加载；对照课程第 6 周讲义。",
+            subtasks: [
+              { id: "s1", label: "BrowserRouter", done: true },
+              { id: "s2", label: "404 页", done: false },
+            ],
+          },
+          {
+            id: "2",
+            title: "刷 10 道数据结构题",
+            planned: "2026-04-10",
+            slot: "晚上",
+            due: "2026-04-11",
+            done: true,
+            completedOn: "2026-04-11",
+            course: { id: "ds", name: "数据结构与算法" },
+            tags: ["考试", "复习"],
+            notes: "栈 / 队列各半。",
+            subtasks: [
+              { id: "s3", label: "栈 5 题", done: true },
+              { id: "s4", label: "队列 5 题", done: true },
+            ],
+          },
+          {
+            id: "3",
+            title: "英语精读一篇 + 生词整理",
+            planned: "2026-04-11",
+            slot: "上午",
+            due: null,
+            done: false,
+            course: { id: "eng", name: "大学英语" },
+            tags: ["复习"],
+            notes: "单元 3 文章；生词进 Anki。",
+            subtasks: [{ id: "s5", label: "20 个生词", done: false }],
+          },
+          {
+            id: "4",
+            title: "高数作业 3.2–3.4",
+            planned: "2026-04-12",
+            slot: "晚上",
+            due: "2026-04-14",
+            done: false,
+            course: { id: "math", name: "高等数学" },
+            tags: ["作业"],
+            notes: "交前核对页码。",
+            subtasks: [
+              { id: "s6", label: "3.2 奇数题", done: false },
+              { id: "s7", label: "3.3 全做", done: false },
+            ],
+          },
+          {
+            id: "5",
+            title: "课程项目：需求文档初稿",
+            planned: "2026-04-13",
+            slot: "下午",
+            due: "2026-04-20",
+            done: false,
+            course: { id: "web", name: "Web 前端开发" },
+            tags: ["项目"],
+            notes: "用户故事 + 线框附录。",
+            subtasks: [{ id: "s9", label: "故事清单", done: false }],
+          },
+        ];
+
+        const tagClass = (t) => {
+          const m = {
+            考试: "tag--exam",
+            编程: "tag--code",
+            作业: "tag--hw",
+            复习: "tag--rev",
+            项目: "tag--proj",
+            习惯: "tag--habit",
+          };
+          return m[t] || "tag--rev";
+        };
+
+        const fmt = (iso) => {
+          const [y, mo, d] = iso.split("-");
+          return `${y} 年 ${Number(mo)} 月 ${Number(d)} 日`;
+        };
+
+        const weekday = (iso) => {
+          const w = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];
+          const dt = new Date(iso + "T12:00:00");
+          return w[dt.getDay()];
+        };
+
+        function enumerateDays(start, end) {
+          const out = [];
+          let cur = start;
+          while (cur <= end) {
+            out.push(cur);
+            const d = new Date(cur + "T12:00:00");
+            d.setDate(d.getDate() + 1);
+            cur = d.toISOString().slice(0, 10);
+          }
+          return out;
+        }
+
+        function allTimelineDays() {
+          const set = new Set();
+          tasks.forEach((t) => set.add(t.planned));
+          recurringTemplates.forEach((r) => {
+            enumerateDays(r.from, r.to).forEach((d) => set.add(d));
+          });
+          const extra = "2026-04-09";
+          set.add(extra);
+          return Array.from(set).sort();
+        }
+
+        function recurringForDay(day) {
+          return recurringTemplates.filter((r) => day >= r.from && day <= r.to);
+        }
+
+        function isLate(task) {
+          return (
+            !task.done &&
+            task.due &&
+            task.due < new Date().toISOString().slice(0, 10)
+          );
+        }
+
+        const checkinState = {};
+        function isCheckedIn(day) {
+          return checkinState[day] === true;
+        }
+        function setCheckedIn(day, v) {
+          checkinState[day] = v;
+        }
+
+        function dayTasksComplete(day) {
+          const one = tasks.filter((t) => t.planned === day);
+          if (one.length === 0) return false;
+          return one.every((t) => t.done);
+        }
+
+        function rewardText(day) {
+          if (isCheckedIn(day)) {
+            return '<span class="emoji">✓</span>今日已打卡 · 获得 <strong>+2 学习点</strong> · 徽章「晨光一页」';
+          }
+          if (dayTasksComplete(day)) {
+            return '<span class="emoji">🌟</span>本日任务已完成 · 获得 <strong>+1 学习点</strong> · 小奖励「专注糖」';
+          }
+          return '<span class="emoji">📌</span>完成当日全部任务或点击打卡，可解锁示意奖励文案';
+        }
+
+        function renderList() {
+          const root = document.getElementById("task-list-root");
+          const recurringHtml = recurringTemplates.map((r) => recurringCardHtml(r)).join("");
+          const normalHtml = tasks
+            .slice()
+            .sort((a, b) => a.planned.localeCompare(b.planned))
+            .map((t) => cardHtml(t))
+            .join("");
+          root.innerHTML =
+            '<p class="list-section-hd">长期 · 每日自动出现</p>' +
+            recurringHtml +
+            '<p class="list-section-hd">单次计划</p>' +
+            normalHtml;
+          bindCardEvents(root);
+        }
+
+        function recurringCardHtml(r) {
+          const tags = (r.tags || [])
+            .map((t) => `<span class="tag ${tagClass(t)}">${escapeHtml(t)}</span>`)
+            .join("");
+          const subs = (r.subtasks || [])
+            .map(
+              (s) => `
+            <li>
+              <input type="checkbox" ${s.done ? "checked" : ""} disabled aria-label="${escapeHtml(
+                s.label
+              )}" />
+              <span>${escapeHtml(s.label)}</span>
+            </li>`
+            )
+            .join("");
+          return `
+          <article class="task-card is-recurring" data-id="${r.id}" data-open="false" data-recurring="1">
+            <div class="task-hd">
+              <div class="task-main">
+                <h2 class="task-title">${escapeHtml(r.title)}</h2>
+                <div class="task-meta">
+                  <span class="badge-daily">每日重复</span>
+                  <span class="badge-plan">${r.from} ～ ${r.to}</span>
+                  ${r.slot ? `<span class="badge-slot">${escapeHtml(r.slot)}</span>` : ""}
+                </div>
+                <span class="course-pill">课程：<a href="courses-module-preview.html#">${escapeHtml(
+                  r.course.name
+                )}</a></span>
+                <div class="tag-row">${tags}</div>
+              </div>
+              <div class="task-actions">
+                <button type="button" class="btn btn-sm btn-success-outline" disabled>完成</button>
+                <button type="button" class="btn btn-sm btn-danger-outline" disabled>删除</button>
+              </div>
+              <div class="expand-toggle">
+                <button type="button" class="expand-btn" aria-expanded="false" data-expand>
+                  详细记录 <span class="chev" aria-hidden="true">▾</span>
+                </button>
+              </div>
+            </div>
+            <div class="task-detail">
+              <div class="detail-grid">
+                <div class="detail-block">
+                  <h3>笔记 / 说明</h3>
+                  <textarea class="notes-mock" readonly>${escapeHtml(r.notes || "")}</textarea>
+                </div>
+                <div class="detail-block">
+                  <h3>子任务（每日相同）</h3>
+                  <ul class="subtasks">${subs}</ul>
+                  <div class="feature-callout">
+                    <strong>长期任务逻辑（示意）</strong>
+                    在区间内每一天的时间线列中自动插入本卡片；真实实现需按「日」写入完成状态与奖励。
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>`;
+        }
+
+        function cardHtml(task) {
+          const dueLine = task.due
+            ? `<span class="badge-due ${isLate(task) ? "is-late" : ""}">截止: ${task.due}</span>`
+            : `<span class="badge-due">截止: 未设置</span>`;
+          const doneLine = task.done
+            ? `<span>完成: ${task.completedOn || "—"}</span>`
+            : "";
+          const slotLine = task.slot
+            ? `<span class="badge-slot">${escapeHtml(task.slot)}</span>`
+            : "";
+          const courseHtml = task.course
+            ? `<span class="course-pill">课程：<a href="courses-module-preview.html#">${escapeHtml(
+                task.course.name
+              )}</a></span>`
+            : `<span class="course-pill">未关联课程</span>`;
+          const tags = (task.tags || [])
+            .map((t) => `<span class="tag ${tagClass(t)}">${escapeHtml(t)}</span>`)
+            .join("");
+          const subs = (task.subtasks || [])
+            .map(
+              (s) => `
+            <li>
+              <input type="checkbox" ${s.done ? "checked" : ""} disabled aria-label="${escapeHtml(
+                s.label
+              )}" />
+              <span>${escapeHtml(s.label)}</span>
+            </li>`
+            )
+            .join("");
+
+          return `
+          <article class="task-card ${task.done ? "is-done" : ""}" data-id="${task.id}" data-open="false">
+            <div class="task-hd">
+              <div class="task-main">
+                <h2 class="task-title">${escapeHtml(task.title)}</h2>
+                <div class="task-meta">
+                  <span class="badge-plan">计划做: ${task.planned}</span>
+                  ${slotLine}
+                  ${dueLine}
+                  ${doneLine}
+                </div>
+                ${courseHtml}
+                <div class="tag-row">${tags}</div>
+              </div>
+              <div class="task-actions">
+                <button type="button" class="btn btn-sm btn-success-outline" disabled>
+                  ${task.done ? "取消完成" : "完成"}
+                </button>
+                <button type="button" class="btn btn-sm btn-danger-outline" disabled>删除</button>
+              </div>
+              <div class="expand-toggle">
+                <button type="button" class="expand-btn" aria-expanded="false" data-expand>
+                  详细记录 <span class="chev" aria-hidden="true">▾</span>
+                </button>
+              </div>
+            </div>
+            <div class="task-detail">
+              <div class="detail-grid">
+                <div class="detail-block">
+                  <h3>笔记 / 过程记录</h3>
+                  <textarea class="notes-mock" readonly>${escapeHtml(task.notes || "")}</textarea>
+                </div>
+                <div class="detail-block">
+                  <h3>子任务</h3>
+                  <ul class="subtasks">${subs}</ul>
+                  <div class="feature-callout">
+                    <strong>配色标签</strong>
+                    列表与时间线共用标签色；不设筛选栏，仅作类型识别与关联课程入口。
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>`;
+        }
+
+        function bindCardEvents(root) {
+          root.querySelectorAll(".task-card").forEach((card) => {
+            const btn = card.querySelector("[data-expand]");
+            if (!btn) return;
+            btn.addEventListener("click", () => {
+              const open = card.getAttribute("data-open") === "true";
+              card.setAttribute("data-open", open ? "false" : "true");
+              btn.setAttribute("aria-expanded", open ? "false" : "true");
+            });
+          });
+        }
+
+        function escapeHtml(s) {
+          return String(s)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;");
+        }
+
+        function renderTimeline() {
+          const days = allTimelineDays();
+          const root = document.getElementById("timeline-root");
+          root.innerHTML = days
+            .map((day) => {
+              const oneOff = tasks.filter((t) => t.planned === day);
+              const daily = recurringForDay(day).map((r) => ({
+                ...r,
+                planned: day,
+                _jumpId: r.id,
+                done: false,
+              }));
+              const merged = [...daily.map((t) => ({ type: "daily", task: t })), ...oneOff.map((t) => ({ type: "one", task: t }))];
+              const cards =
+                merged.length === 0
+                  ? `<div class="empty-day">本日暂无安排<br /><span style="font-size:11px">可添加任务或设置长期日程</span></div>`
+                  : `<div class="tl-stack">${merged
+                      .map(({ type, task }) => {
+                        const isDaily = type === "daily";
+                        const jump = isDaily ? task._jumpId : task.id;
+                        return `
+                <button type="button" class="tl-card ${isDaily ? "is-daily" : ""}" data-jump="${jump}">
+                  ${task.slot ? `<div class="slot-line">${escapeHtml(task.slot)}</div>` : ""}
+                  <strong>${escapeHtml(task.title)}</strong>
+                  <div class="mini">
+                    ${isDaily ? '<span class="badge-daily" style="margin-right:6px">每日</span>' : ""}
+                    ${task.course ? escapeHtml(task.course.name) : "未关联课程"}
+                    ${task.due ? " · 截止 " + task.due : ""}
+                  </div>
+                  <div class="tag-row" style="margin-top:6px">
+                    ${(task.tags || [])
+                      .map((t) => `<span class="tag ${tagClass(t)}">${escapeHtml(t)}</span>`)
+                      .join("")}
+                  </div>
+                </button>`;
+                      })
+                      .join("")}</div>`;
+
+              const checked = isCheckedIn(day);
+              return `
+              <div class="day-col" data-day="${day}">
+                <div class="day-col-hd">
+                  <div class="day-col-hd-top">
+                    <div>
+                      <time datetime="${day}">${fmt(day)}</time>
+                      <span class="week">${weekday(day)}</span>
+                    </div>
+                    <button type="button" class="btn-checkin" data-day="${day}" data-done="${checked}">
+                      ${checked ? "已打卡" : "今日打卡"}
+                    </button>
+                  </div>
+                  <div class="day-reward" data-show="false" data-reward-box="${day}">${rewardText(day)}</div>
+                </div>
+                <div class="day-col-body">${cards}</div>
+              </div>`;
+            })
+            .join("");
+
+          root.querySelectorAll(".btn-checkin").forEach((btn) => {
+            btn.addEventListener("click", (e) => {
+              e.stopPropagation();
+              const day = btn.getAttribute("data-day");
+              const next = btn.getAttribute("data-done") !== "true";
+              setCheckedIn(day, next);
+              btn.setAttribute("data-done", next);
+              btn.textContent = next ? "已打卡" : "今日打卡";
+              updateRewardBox(day);
+            });
+          });
+
+          root.querySelectorAll(".tl-card").forEach((btn) => {
+            btn.addEventListener("click", () => {
+              document.getElementById("btn-list").click();
+              const id = btn.getAttribute("data-jump");
+              document.querySelectorAll(".task-list .task-card").forEach((c) => {
+                const shouldOpen = c.getAttribute("data-id") === id;
+                c.setAttribute("data-open", shouldOpen ? "true" : "false");
+                const eb = c.querySelector("[data-expand]");
+                if (eb) eb.setAttribute("aria-expanded", shouldOpen ? "true" : "false");
+              });
+              const card = document.querySelector(`.task-list .task-card[data-id="${id}"]`);
+              if (card) card.scrollIntoView({ behavior: "smooth", block: "nearest" });
+            });
+          });
+
+          days.forEach(updateRewardBox);
+        }
+
+        function updateRewardBox(day) {
+          const box = document.querySelector(`[data-reward-box="${day}"]`);
+          if (!box) return;
+          const show = isCheckedIn(day) || dayTasksComplete(day);
+          box.setAttribute("data-show", show ? "true" : "false");
+          box.innerHTML = rewardText(day);
+        }
+
+        const btnT = document.getElementById("btn-timeline");
+        const btnL = document.getElementById("btn-list");
+        const panelT = document.getElementById("panel-timeline");
+        const panelL = document.getElementById("panel-list");
+
+        function setView(mode) {
+          const isT = mode === "timeline";
+          btnT.setAttribute("aria-pressed", isT);
+          btnL.setAttribute("aria-pressed", !isT);
+          panelT.hidden = !isT;
+          panelL.hidden = isT;
+        }
+
+        btnT.addEventListener("click", () => setView("timeline"));
+        btnL.addEventListener("click", () => setView("list"));
+
+        document.querySelectorAll("#tag-assign .tag-opt").forEach((b) => {
+          b.addEventListener("click", () => {
+            document.querySelectorAll("#tag-assign .tag-opt").forEach((x) => {
+              x.dataset.on = "false";
+            });
+            b.dataset.on = "true";
+          });
+        });
+
+        renderList();
+        renderTimeline();
+      })();
+    </script>
+  </body>
+</html>

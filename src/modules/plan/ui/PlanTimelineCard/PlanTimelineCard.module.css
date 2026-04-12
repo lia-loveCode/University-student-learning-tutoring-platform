@@ -1,0 +1,192 @@
+/* 与 PlanDayColumn：rail 宽 24px，圆心落在轨道中心（12px），卡片左缘在轨道右缘 */
+.root {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: var(--space-12);
+  align-items: flex-start;
+  border-radius: var(--radius-14);
+  border: 1px solid var(--color-border);
+  padding: var(--space-16) var(--space-16) var(--space-16) var(--space-12);
+  margin-left: 0;
+  background: var(--color-surface);
+  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.04);
+}
+
+/* 圆点中心 = 轨道中心：卡片左缘距列内容区起点 24px，圆宽 12px → left = -18px 使圆心在 12px */
+.root::before {
+  content: '';
+  position: absolute;
+  left: -18px;
+  top: 22px;
+  width: 12px;
+  height: 12px;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  border: 2px solid var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.15);
+  z-index: 2;
+}
+
+.daily {
+  border-color: #ddd6fe;
+  background: linear-gradient(135deg, #faf5ff 0%, var(--color-surface) 55%);
+}
+
+.daily::before {
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 2px #ede9fe;
+}
+
+/* 当日标记「完成」后沉底，并使用统一的完成态配色 */
+.root.done {
+  border-color: rgba(22, 163, 74, 0.42);
+  background: linear-gradient(145deg, #ecfdf5 0%, #f0fdf4 48%, #f8fafc 100%);
+  box-shadow: 0 1px 0 rgba(22, 163, 74, 0.08);
+}
+
+.root.daily.done {
+  border-color: rgba(22, 163, 74, 0.45);
+  background: linear-gradient(145deg, #ecfdf5 0%, #eefdf6 45%, #f5f3ff 100%);
+}
+
+.root.done::before {
+  border-color: #22c55e;
+  background: #ecfdf5;
+  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.22);
+}
+
+.root.done .slot {
+  color: #047857;
+}
+
+.root.done .title {
+  color: #14532d;
+}
+
+.root.done .meta {
+  color: #4d7c6f;
+}
+
+.root.done .main:hover .title {
+  color: #166534;
+}
+
+.main {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  padding: var(--space-4) var(--space-4) var(--space-4) 0;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.main:hover .title {
+  color: var(--color-primary);
+}
+
+.slot {
+  font-size: var(--text-14);
+  font-weight: 700;
+  color: #0369a1;
+  margin-bottom: var(--space-8);
+  line-height: var(--lh-22);
+}
+
+.title {
+  display: block;
+  font-size: var(--text-16);
+  font-weight: 700;
+  margin-bottom: var(--space-8);
+  color: var(--color-text-strong);
+  line-height: var(--lh-24);
+}
+
+.meta {
+  font-size: var(--text-14);
+  color: var(--color-text-dim);
+  line-height: var(--lh-22);
+}
+
+.badgeDaily {
+  display: inline-block;
+  margin-right: var(--space-8);
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
+  font-weight: 800;
+  font-size: var(--text-12);
+  color: #5b21b6;
+  background: #ede9fe;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+  margin-top: var(--space-12);
+}
+
+.side {
+  flex-shrink: 0;
+  padding-top: var(--space-4);
+}
+
+.doneBtn {
+  height: 32px;
+  padding: 0 var(--space-12);
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-2);
+  font-size: var(--text-14);
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  color: var(--color-text-strong);
+}
+
+.doneBtn:hover {
+  border-color: rgba(22, 119, 255, 0.35);
+}
+
+.doneBtn:focus-visible {
+  outline: none;
+  box-shadow: var(--ring-focus);
+}
+
+.doneBtnActive {
+  border-color: rgba(22, 163, 74, 0.5);
+  background: #dcfce7;
+  color: #14532d;
+}
+
+.doneBtnActive:hover {
+  border-color: #22c55e;
+  background: #bbf7d0;
+}
+
+/* 新建任务后：与时间线建立「落点」反馈 */
+.highlightFlash {
+  animation: planTimelineCardFlash 1.35s ease-out;
+  z-index: 4;
+}
+
+@keyframes planTimelineCardFlash {
+  0% {
+    box-shadow:
+      0 1px 0 rgba(15, 23, 42, 0.04),
+      0 0 0 0 rgba(22, 119, 255, 0.45);
+  }
+
+  35% {
+    box-shadow:
+      0 4px 18px rgba(22, 119, 255, 0.18),
+      0 0 0 10px rgba(22, 119, 255, 0);
+  }
+
+  100% {
+    box-shadow: 0 1px 0 rgba(15, 23, 42, 0.04);
+  }
+}

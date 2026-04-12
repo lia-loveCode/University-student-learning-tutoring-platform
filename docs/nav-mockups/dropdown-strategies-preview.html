@@ -1,0 +1,689 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>筛选下拉策略对比 · 3A/3B/3C/3D</title>
+    <style>
+      :root {
+        --bg-page: #f3f5f8;
+        --bg-card: #fff;
+        --border: #e2e8f0;
+        --text: #0f172a;
+        --muted: #64748b;
+        --brand: #2563eb;
+        --soft: #eff6ff;
+        --shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+        --shadow-pop: 0 18px 36px rgba(15, 23, 42, 0.18);
+        --radius: 14px;
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, "PingFang SC",
+          "Hiragino Sans GB", "Microsoft Yahei", sans-serif;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg-page);
+        color: var(--text);
+        line-height: 1.5;
+      }
+      .wrap {
+        max-width: 1100px;
+        margin: 22px auto 60px;
+        padding: 0 16px;
+      }
+      h1 {
+        margin: 0 0 8px;
+        font-size: 20px;
+        letter-spacing: -0.02em;
+      }
+      p.subtitle {
+        margin: 0 0 16px;
+        color: #475569;
+        font-size: 13px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+      @media (min-width: 980px) {
+        .grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+      .card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+      .card-hd {
+        padding: 12px 14px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 12px;
+        background: linear-gradient(180deg, #fbfdff 0%, #fff 100%);
+      }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        height: 24px;
+        padding: 0 10px;
+        border-radius: 999px;
+        border: 1px solid #dbeafe;
+        background: var(--soft);
+        color: #1e3a8a;
+        font-weight: 800;
+        font-size: 12px;
+        letter-spacing: 0.04em;
+      }
+      .hd-title {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+      }
+      .hd-title strong {
+        font-size: 14px;
+      }
+      .hd-title span {
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .card-bd {
+        padding: 14px;
+      }
+      .toolbar {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 10px;
+        align-items: start;
+      }
+      .input {
+        height: 40px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        padding: 0 12px;
+        font-size: 14px;
+        width: 100%;
+        outline: none;
+      }
+      .input:focus {
+        border-color: #bfdbfe;
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+      }
+      .btn {
+        height: 40px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: #fff;
+        padding: 0 12px;
+        font-weight: 800;
+        cursor: pointer;
+      }
+      .btn-primary {
+        background: #2563eb;
+        color: #fff;
+        border-color: #bfdbfe;
+      }
+      .btn:active {
+        transform: translateY(1px);
+      }
+      .row {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+        margin-top: 10px;
+      }
+      @media (min-width: 520px) {
+        .row {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+      .dd {
+        position: relative;
+      }
+      .dd-trigger {
+        width: 100%;
+        height: 40px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: #fff;
+        padding: 0 12px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        font-size: 14px;
+        cursor: pointer;
+      }
+      .chev {
+        width: 0;
+        height: 0;
+        border-left: 5px solid transparent;
+        border-right: 5px solid transparent;
+        border-top: 6px solid #94a3b8;
+      }
+      /* 覆盖式浮层（默认） */
+      .panel-pop {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: calc(100% + 8px);
+        z-index: 20;
+        display: none;
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        box-shadow: var(--shadow-pop);
+        padding: 6px;
+        max-height: 220px;
+        overflow: auto;
+      }
+      .panel-pop[data-side="top"] {
+        top: auto;
+        bottom: calc(100% + 8px);
+      }
+      /* 占位式展开（推开内容） */
+      .panel-push {
+        position: static;
+        margin-top: 8px;
+        display: none;
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        box-shadow: 0 10px 22px rgba(15, 23, 42, 0.12);
+        padding: 6px;
+        max-height: 220px;
+        overflow: auto;
+      }
+      .dd[data-open="true"] .panel-pop,
+      .dd[data-open="true"] .panel-push {
+        display: block;
+      }
+      .item {
+        width: 100%;
+        text-align: left;
+        border: 0;
+        background: transparent;
+        cursor: pointer;
+        padding: 10px 10px;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 800;
+        color: var(--text);
+      }
+      .item:hover {
+        background: #f8fafc;
+      }
+      .item[aria-selected="true"] {
+        background: #3b82f6;
+        color: #fff;
+      }
+      .meta {
+        margin-top: 10px;
+        font-size: 12px;
+        color: var(--muted);
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .list {
+        margin-top: 12px;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+      .course {
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 12px;
+        background: #fff;
+      }
+      .course strong {
+        display: block;
+        font-size: 14px;
+        margin-bottom: 4px;
+      }
+      .course span {
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 10px;
+      }
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        height: 30px;
+        padding: 0 10px;
+        border-radius: 999px;
+        border: 1px solid #dbeafe;
+        background: var(--soft);
+        color: #1e3a8a;
+        font-size: 12px;
+        font-weight: 900;
+      }
+      .chip .x {
+        width: 18px;
+        height: 18px;
+        border-radius: 999px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(30, 58, 138, 0.12);
+        font-weight: 900;
+      }
+      .inline-options {
+        display: none;
+        margin-top: 8px;
+        padding: 10px;
+        border: 1px dashed #cbd5e1;
+        border-radius: 12px;
+        color: #334155;
+        background: #fbfdff;
+      }
+      .inline-options[data-on="true"] {
+        display: block;
+      }
+      .inline-options .mini {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 8px;
+      }
+      .pill {
+        border: 1px solid var(--border);
+        background: #fff;
+        height: 30px;
+        padding: 0 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 900;
+        cursor: pointer;
+      }
+      .pill[data-active="true"] {
+        border-color: #bfdbfe;
+        background: var(--soft);
+        color: #1e3a8a;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="wrap">
+      <h1>筛选下拉策略对比（简单 mockup）</h1>
+      <p class="subtitle">
+        每张卡片里点「分类」即可看到不同策略的行为差异。为了复现“列表内容少”的场景，每张卡片下面只有 2 条课程卡片。
+      </p>
+
+      <div class="grid">
+        <!-- 3A -->
+        <section class="card" data-strategy="3a">
+          <div class="card-hd">
+            <div class="hd-title">
+              <strong>3A · Hybrid（覆盖式为主，必要时自动推开）</strong>
+              <span>默认浮层覆盖；若遮挡结果区（列表很少时）→ 自动切换为占位式展开</span>
+            </div>
+            <span class="badge">3A</span>
+          </div>
+          <div class="card-bd">
+            <div class="toolbar">
+              <input class="input" placeholder="搜索…" />
+              <button class="btn btn-primary" type="button" data-action="toggleFew">
+                切换：列表很少
+              </button>
+            </div>
+            <div class="row">
+              <div class="dd" data-open="false">
+                <button class="dd-trigger" type="button" data-role="trigger">
+                  <span data-role="label">分类：全部</span><span class="chev"></span>
+                </button>
+                <!-- 同时放两种面板：由脚本决定开 pop 还是 push -->
+                <div class="panel-pop" data-role="panel-pop" role="listbox" aria-label="分类（覆盖式）">
+                  <button class="item" type="button" aria-selected="true">分类：全部</button>
+                  <button class="item" type="button" aria-selected="false">计算机</button>
+                  <button class="item" type="button" aria-selected="false">考研</button>
+                  <button class="item" type="button" aria-selected="false">英语</button>
+                </div>
+                <div class="panel-push" data-role="panel-push" role="listbox" aria-label="分类（推开式）">
+                  <button class="item" type="button" aria-selected="true">分类：全部</button>
+                  <button class="item" type="button" aria-selected="false">计算机</button>
+                  <button class="item" type="button" aria-selected="false">考研</button>
+                  <button class="item" type="button" aria-selected="false">英语</button>
+                </div>
+              </div>
+
+              <div class="dd" data-open="false">
+                <button class="dd-trigger" type="button" disabled title="本 mockup 省略">
+                  <span>难度：全部（略）</span><span class="chev"></span>
+                </button>
+              </div>
+            </div>
+            <div class="meta">
+              <span>提示：当“列表很少”时，自动推开以避免遮挡</span>
+              <span data-role="mode">当前：覆盖式（pop）</span>
+            </div>
+            <div class="list" data-role="list">
+              <div class="course"><strong>TypeScript 入门到实践</strong><span>计算机 · 入门 · ★ 4.8</span></div>
+              <div class="course"><strong>考研英语长难句精讲</strong><span>考研 · 进阶 · ★ 4.6</span></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3B -->
+        <section class="card" data-strategy="3b">
+          <div class="card-hd">
+            <div class="hd-title">
+              <strong>3B · Flip（空间不够就向上开）</strong>
+              <span>覆盖式浮层；如果下方空间不足，面板翻转到上方（你可能不喜欢这种）</span>
+            </div>
+            <span class="badge">3B</span>
+          </div>
+          <div class="card-bd">
+            <div class="toolbar">
+              <input class="input" placeholder="搜索…" />
+              <button class="btn" type="button" data-action="pinBottom">
+                模拟：下方空间不足
+              </button>
+            </div>
+            <div class="row">
+              <div class="dd" data-open="false">
+                <button class="dd-trigger" type="button" data-role="trigger">
+                  <span data-role="label">分类：全部</span><span class="chev"></span>
+                </button>
+                <div
+                  class="panel-pop"
+                  data-role="panel-pop"
+                  data-side="bottom"
+                  role="listbox"
+                  aria-label="分类（翻转）"
+                >
+                  <button class="item" type="button" aria-selected="true">分类：全部</button>
+                  <button class="item" type="button" aria-selected="false">计算机</button>
+                  <button class="item" type="button" aria-selected="false">考研</button>
+                  <button class="item" type="button" aria-selected="false">英语</button>
+                </div>
+              </div>
+              <div class="dd" data-open="false">
+                <button class="dd-trigger" type="button" disabled title="本 mockup 省略">
+                  <span>难度：全部（略）</span><span class="chev"></span>
+                </button>
+              </div>
+            </div>
+            <div class="meta">
+              <span>提示：切换按钮会让面板“假装检测到”下方空间不足 → 翻转到上方</span>
+              <span data-role="mode">当前：向下开</span>
+            </div>
+            <div class="list">
+              <div class="course"><strong>TypeScript 入门到实践</strong><span>计算机 · 入门 · ★ 4.8</span></div>
+              <div class="course"><strong>考研英语长难句精讲</strong><span>考研 · 进阶 · ★ 4.6</span></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3C -->
+        <section class="card" data-strategy="3c" id="card-3c">
+          <div class="card-hd">
+            <div class="hd-title">
+              <strong>3C · Scroll（打开时自动滚到安全位置）</strong>
+              <span>覆盖式浮层；打开时自动滚动，让“筛选区在上、列表露出更多”</span>
+            </div>
+            <span class="badge">3C</span>
+          </div>
+          <div class="card-bd">
+            <div class="toolbar">
+              <input class="input" placeholder="搜索…" />
+              <button class="btn" type="button" data-action="jumpDemo">
+                模拟：先滚到下面
+              </button>
+            </div>
+            <div class="row">
+              <div class="dd" data-open="false">
+                <button class="dd-trigger" type="button" data-role="trigger">
+                  <span data-role="label">分类：全部</span><span class="chev"></span>
+                </button>
+                <div class="panel-pop" data-role="panel-pop" role="listbox" aria-label="分类（自动滚动）">
+                  <button class="item" type="button" aria-selected="true">分类：全部</button>
+                  <button class="item" type="button" aria-selected="false">计算机</button>
+                  <button class="item" type="button" aria-selected="false">考研</button>
+                  <button class="item" type="button" aria-selected="false">英语</button>
+                </div>
+              </div>
+              <div class="dd" data-open="false">
+                <button class="dd-trigger" type="button" disabled title="本 mockup 省略">
+                  <span>难度：全部（略）</span><span class="chev"></span>
+                </button>
+              </div>
+            </div>
+            <div class="meta">
+              <span>提示：当你在页面下方时，打开下拉会自动把这张卡片滚到视口中间</span>
+              <span data-role="mode">当前：覆盖式（pop）</span>
+            </div>
+            <div class="list">
+              <div class="course"><strong>TypeScript 入门到实践</strong><span>计算机 · 入门 · ★ 4.8</span></div>
+              <div class="course"><strong>考研英语长难句精讲</strong><span>考研 · 进阶 · ★ 4.6</span></div>
+              <div class="course"><strong>（占位）更多内容</strong><span>为了让你更容易触发“滚动感受”</span></div>
+              <div class="course"><strong>（占位）更多内容</strong><span>滚动到下面后再打开下拉试试</span></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3D -->
+        <section class="card" data-strategy="3d">
+          <div class="card-hd">
+            <div class="hd-title">
+              <strong>3D · Small-N Inline（结果少时改为内联选项）</strong>
+              <span>当结果 N 很小（如 ≤ 3），不弹浮层，直接在筛选区内展示可选项</span>
+            </div>
+            <span class="badge">3D</span>
+          </div>
+          <div class="card-bd">
+            <div class="toolbar">
+              <input class="input" placeholder="搜索…" />
+              <button class="btn btn-primary" type="button" data-action="toggleInline">
+                切换：N ≤ 3
+              </button>
+            </div>
+            <div class="row">
+              <div class="dd" data-open="false">
+                <button class="dd-trigger" type="button" data-role="trigger">
+                  <span data-role="label">分类：全部</span><span class="chev"></span>
+                </button>
+                <div class="panel-pop" data-role="panel-pop" role="listbox" aria-label="分类（覆盖式）">
+                  <button class="item" type="button" aria-selected="true">分类：全部</button>
+                  <button class="item" type="button" aria-selected="false">计算机</button>
+                  <button class="item" type="button" aria-selected="false">考研</button>
+                  <button class="item" type="button" aria-selected="false">英语</button>
+                </div>
+              </div>
+              <div class="dd" data-open="false">
+                <button class="dd-trigger" type="button" disabled title="本 mockup 省略">
+                  <span>难度：全部（略）</span><span class="chev"></span>
+                </button>
+              </div>
+            </div>
+
+            <div class="inline-options" data-role="inline" data-on="false">
+              <strong>结果很少 → 直接内联选择（不弹浮层）</strong>
+              <div class="mini" aria-label="内联分类选项">
+                <button class="pill" type="button" data-active="true">全部</button>
+                <button class="pill" type="button" data-active="false">计算机</button>
+                <button class="pill" type="button" data-active="false">考研</button>
+                <button class="pill" type="button" data-active="false">英语</button>
+              </div>
+              <div class="chips" aria-label="已选条件示例">
+                <span class="chip">分类：计算机 <span class="x">×</span></span>
+              </div>
+            </div>
+
+            <div class="meta">
+              <span>提示：当 N ≤ 3 时，禁用弹层，改为内联 pills</span>
+              <span data-role="mode">当前：覆盖式（pop）</span>
+            </div>
+            <div class="list">
+              <div class="course"><strong>TypeScript 入门到实践</strong><span>计算机 · 入门 · ★ 4.8</span></div>
+              <div class="course"><strong>考研英语长难句精讲</strong><span>考研 · 进阶 · ★ 4.6</span></div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        function closest(el, sel) {
+          return el && el.closest ? el.closest(sel) : null;
+        }
+        function setLabel(dd, text) {
+          const label = dd.querySelector('[data-role="label"]');
+          if (label) label.textContent = text;
+        }
+        function markSelected(panel, pickedText) {
+          panel.querySelectorAll(".item").forEach((b) => {
+            b.setAttribute("aria-selected", b.textContent.trim() === pickedText ? "true" : "false");
+          });
+        }
+        function closeAll() {
+          document.querySelectorAll(".dd").forEach((dd) => (dd.dataset.open = "false"));
+        }
+
+        // 3A: Hybrid — 当列表很少时使用 push，否则 pop
+        function update3A(card) {
+          const isFew = card.dataset.few === "true";
+          const mode = card.querySelector('[data-role="mode"]');
+          const pop = card.querySelector('[data-role="panel-pop"]');
+          const push = card.querySelector('[data-role="panel-push"]');
+          if (!pop || !push) return;
+          pop.style.display = "none";
+          push.style.display = "none";
+          // open 时由 dd[data-open] 决定显示哪个；这里仅切换启用对象
+          card.dataset.panel = isFew ? "push" : "pop";
+          if (mode) mode.textContent = isFew ? "当前：推开式（push）" : "当前：覆盖式（pop）";
+        }
+
+        // 3B: Flip — 模拟空间不足时 data-side="top"
+        function update3B(card) {
+          const tight = card.dataset.tight === "true";
+          const mode = card.querySelector('[data-role="mode"]');
+          const pop = card.querySelector('[data-role="panel-pop"]');
+          if (pop) pop.dataset.side = tight ? "top" : "bottom";
+          if (mode) mode.textContent = tight ? "当前：向上开（flip）" : "当前：向下开";
+        }
+
+        // 3D: Small-N inline — N<=3 时禁用弹层，展示内联区
+        function update3D(card) {
+          const inlineOn = card.dataset.inline === "true";
+          const mode = card.querySelector('[data-role="mode"]');
+          const inline = card.querySelector('[data-role="inline"]');
+          if (inline) inline.dataset.on = inlineOn ? "true" : "false";
+          if (mode) mode.textContent = inlineOn ? "当前：内联（inline）" : "当前：覆盖式（pop）";
+        }
+
+        // init states
+        document.querySelectorAll('[data-strategy="3a"]').forEach((c) => {
+          c.dataset.few = "true";
+          update3A(c);
+        });
+        document.querySelectorAll('[data-strategy="3b"]').forEach((c) => {
+          c.dataset.tight = "false";
+          update3B(c);
+        });
+        document.querySelectorAll('[data-strategy="3d"]').forEach((c) => {
+          c.dataset.inline = "false";
+          update3D(c);
+        });
+
+        document.addEventListener("click", (e) => {
+          const card = closest(e.target, ".card");
+          if (!card) return;
+
+          const action = e.target && e.target.getAttribute && e.target.getAttribute("data-action");
+          if (action === "toggleFew") {
+            card.dataset.few = card.dataset.few === "true" ? "false" : "true";
+            update3A(card);
+            closeAll();
+            return;
+          }
+          if (action === "pinBottom") {
+            card.dataset.tight = card.dataset.tight === "true" ? "false" : "true";
+            update3B(card);
+            closeAll();
+            return;
+          }
+          if (action === "jumpDemo") {
+            // 模拟用户已在页面较下方浏览列表
+            window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+            closeAll();
+            return;
+          }
+          if (action === "toggleInline") {
+            card.dataset.inline = card.dataset.inline === "true" ? "false" : "true";
+            update3D(card);
+            closeAll();
+            return;
+          }
+
+          const trigger = closest(e.target, '[data-role="trigger"]');
+          const dd = closest(e.target, ".dd");
+          if (trigger && dd) {
+            // 3D 内联开启时，禁用弹层开关
+            if (card.dataset.strategy === "3d" && card.dataset.inline === "true") return;
+
+            // 3A：根据状态决定开 pop 或 push
+            const strat = card.dataset.strategy;
+            if (strat === "3a") {
+              const want = card.dataset.panel === "push" ? "push" : "pop";
+              const pop = dd.querySelector('[data-role="panel-pop"]');
+              const push = dd.querySelector('[data-role="panel-push"]');
+              if (pop) pop.style.display = want === "pop" ? "" : "none";
+              if (push) push.style.display = want === "push" ? "" : "none";
+            }
+
+            // 3C：打开前自动滚到更安全位置（把卡片滚到视口中间）
+            if (card.dataset.strategy === "3c") {
+              card.scrollIntoView({ behavior: "smooth", block: "center" });
+            }
+
+            // toggle open
+            const isOpen = dd.dataset.open === "true";
+            closeAll();
+            dd.dataset.open = isOpen ? "false" : "true";
+            return;
+          }
+
+          const item = closest(e.target, ".item");
+          if (item && dd) {
+            const text = item.textContent.trim();
+            // 同步 label
+            setLabel(dd, text);
+            // 同步选中（两个面板都可能存在）
+            dd.querySelectorAll(".panel-pop, .panel-push").forEach((panel) => markSelected(panel, text));
+            closeAll();
+            return;
+          }
+
+          // 3D 内联 pills
+          const pill = closest(e.target, ".pill");
+          if (pill && card.dataset.strategy === "3d") {
+            pill.parentElement.querySelectorAll(".pill").forEach((p) => p.dataset.active = p === pill ? "true" : "false");
+            return;
+          }
+
+          // 点击空白关闭
+          closeAll();
+        });
+      })();
+    </script>
+  </body>
+</html>
