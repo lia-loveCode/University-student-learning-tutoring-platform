@@ -14,6 +14,11 @@
   min-height: 480px;
 }
 
+.loading {
+  min-height: 200px;
+  justify-content: center;
+}
+
 .slide {
   height: 100%;
   padding: 56px 20px;

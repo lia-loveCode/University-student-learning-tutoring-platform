@@ -31,24 +31,27 @@ export default function QAPage() {
     e.preventDefault()
     const trimmedTitle = title.trim()
     if (!trimmedTitle) return
-    const q = await createQuestion({
-      title: trimmedTitle,
-      category,
-      content: content.trim(),
-      tags: parsedTags,
-    })
-    setQuestions((prev) => [q, ...prev])
-    setTitle('')
-    setTags('')
-    setContent('')
+    try {
+      const q = await createQuestion({
+        title: trimmedTitle,
+        category,
+        content: content.trim(),
+        tags: parsedTags,
+      })
+      setQuestions((prev) => [q, ...prev])
+      setTitle('')
+      setTags('')
+      setContent('')
+    } catch (err) {
+      console.error(err)
+      window.alert(err?.message ?? '发布失败，请确认已配置 Supabase 并已执行 schema.sql。')
+    }
   }
 
   return (
     <section>
       <h1>提问</h1>
-      <p className={styles.subtle}>
-        发布问题后会出现在列表顶部（当前为 Mock 接口）。
-      </p>
+      <p className={styles.subtle}>发布问题后会写入 Supabase，并出现在列表顶部。</p>
 
       <form
         onSubmit={onSubmit}

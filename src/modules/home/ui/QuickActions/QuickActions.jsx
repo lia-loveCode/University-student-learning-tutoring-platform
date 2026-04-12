@@ -1,15 +1,26 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import base from '../Section/sectionBase.module.css'
 import styles from './QuickActions.module.css'
-
-const actions = [
-  { title: '找学长答疑', desc: '快速解决课程难点', to: '/qa', icon: '🎓' },
-  { title: '课程资源', desc: '精选资料与学习路径', to: '/courses', icon: '📚' },
-  { title: '学习计划', desc: '制定任务与进度跟踪', to: '/plan', icon: '🗓️' },
-  { title: '提问社区', desc: '公开问答共同成长', to: '/qa', icon: '❓' },
-]
+import { getHomeQuickActions } from '../../api/homeApi.js'
 
 export default function QuickActions({ className }) {
+  const [actions, setActions] = useState([])
+
+  useEffect(() => {
+    let alive = true
+    getHomeQuickActions()
+      .then((data) => {
+        if (alive) setActions(data)
+      })
+      .catch(() => {
+        if (alive) setActions([])
+      })
+    return () => {
+      alive = false
+    }
+  }, [])
+
   return (
     <section className={className} aria-label="核心功能快捷入口">
       <header className={base.sectionHeader}>
@@ -19,7 +30,7 @@ export default function QuickActions({ className }) {
 
       <div className={styles.grid}>
         {actions.map((a) => (
-          <Link key={a.title} to={a.to} className={`${base.card} ${styles.card}`}>
+          <Link key={a.id} to={a.to} className={`${base.card} ${styles.card}`}>
             <div className={styles.icon} aria-hidden="true">
               {a.icon}
             </div>
@@ -30,7 +41,11 @@ export default function QuickActions({ className }) {
           </Link>
         ))}
       </div>
+      {actions.length === 0 ? (
+        <p className={base.sectionDesc} style={{ marginTop: 8 }}>
+          暂无快捷入口：请在 Supabase 执行 schema.sql 中的 home_quick_actions 段落，或在 Table Editor 添加数据。
+        </p>
+      ) : null}
     </section>
   )
 }
-
