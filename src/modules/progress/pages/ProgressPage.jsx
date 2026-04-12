@@ -29,7 +29,10 @@ export default function ProgressPage() {
             {[
               { label: '本周专注时长', value: `${summary.weekFocusHours}h` },
               { label: '本周完成任务', value: `${summary.weekTasksDone}/${summary.weekTasksTotal}` },
-              { label: '任务完成率', value: `${Math.round((summary.weekTasksDone / summary.weekTasksTotal) * 100)}%` },
+              {
+                label: '任务完成率',
+                value: `${summary.weekTasksTotal ? Math.round((summary.weekTasksDone / summary.weekTasksTotal) * 100) : 0}%`,
+              },
               { label: '连续学习天数', value: `${summary.streakDays} 天` },
             ].map((s) => (
               <div key={s.label} className={styles.card}>

@@ -1,11 +1,17 @@
-import { mockRequest } from '../../../shared/api/request.js'
-import { courses } from '../model/coursesMock.js'
+import { getSupabase } from '../../../shared/lib/supabaseClient.js'
 
-export function listCourses() {
-  return mockRequest(() => courses)
+export async function listCourses() {
+  const sb = getSupabase()
+  if (!sb) return []
+  const { data, error } = await sb.from('courses').select('*').order('title')
+  if (error) throw error
+  return data ?? []
 }
 
-export function getCourseById(id) {
-  return mockRequest(() => courses.find((c) => c.id === id) ?? null)
+export async function getCourseById(id) {
+  const sb = getSupabase()
+  if (!sb) return null
+  const { data, error } = await sb.from('courses').select('*').eq('id', id).maybeSingle()
+  if (error) throw error
+  return data
 }
-

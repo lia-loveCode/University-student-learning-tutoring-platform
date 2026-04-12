@@ -83,7 +83,7 @@ export default function CoursesPage() {
     <section className={styles.page}>
       <FilterControls
         title="课程列表"
-        hint="支持搜索与筛选；当前使用本地 Mock 数据。"
+        hint="支持搜索与筛选；课程数据来自 Supabase。"
         keyword={keywordInput}
         onKeywordChange={setKeywordInput}
         keywordPlaceholder="搜索课程标题 / 作者 / 分类…"
