@@ -38,15 +38,22 @@ export async function getMyProfileStats() {
   if (!sb) {
     return { myCourses: 0, myQuestions: 0, myAnswers: 0, completedPlans: 0 }
   }
-  const { data, error } = await sb.from('user_profile').select('*').eq('id', PROFILE_ID).maybeSingle()
-  if (error) throw error
-  if (!data) {
-    return { myCourses: 0, myQuestions: 0, myAnswers: 0, completedPlans: 0 }
+
+  const [profileRes, questionsCountRes, answersCountRes, donePlansRes] = await Promise.all([
+    sb.from('user_profile').select('my_courses').eq('id', PROFILE_ID).maybeSingle(),
+    sb.from('qa_questions').select('*', { count: 'exact', head: true }),
+    sb.from('qa_answers').select('*', { count: 'exact', head: true }),
+    sb.from('plan_once_tasks').select('*', { count: 'exact', head: true }).eq('done', true),
+  ])
+
+  for (const r of [profileRes, questionsCountRes, answersCountRes, donePlansRes]) {
+    if (r.error) throw r.error
   }
+
   return {
-    myCourses: data.my_courses,
-    myQuestions: data.my_questions,
-    myAnswers: data.my_answers,
-    completedPlans: data.completed_plans,
+    myCourses: profileRes.data?.my_courses ?? 0,
+    myQuestions: questionsCountRes.count ?? 0,
+    myAnswers: answersCountRes.count ?? 0,
+    completedPlans: donePlansRes.count ?? 0,
   }
 }
