@@ -70,6 +70,21 @@
   justify-content: flex-end;
 }
 
+.userHint {
+  font-size: 12px;
+  color: var(--nav-text-dim);
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.authRow button.btn,
+.authRow button.btnGhost {
+  cursor: pointer;
+  font: inherit;
+}
+
 .nav {
   display: flex;
   align-items: center;
@@ -205,6 +220,15 @@
 .btnGhost {
   background: rgba(255, 255, 255, 0.08);
   color: rgba(255, 255, 255, 0.9);
+}
+
+.authRow a.btn,
+.authRow a.btnGhost {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
 }
 
 @media (max-width: 1213px) and (min-width: 981px) {
