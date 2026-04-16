@@ -1,5 +1,11 @@
-import { useState } from 'react'
-import { NavLink } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Link, NavLink } from 'react-router-dom'
+import {
+  fetchServerSessionUser,
+  signOutEverywhere,
+  syncSupabaseSessionToServer,
+} from '../../../modules/auth/api/loginApi.js'
+import { getSupabase, isSupabaseConfigured } from '../../../shared/lib/supabaseClient.js'
 import styles from './Navbar.module.css'
 
 const links = [
@@ -20,6 +26,69 @@ function showHomeActive(isRouteActive, hoveredTo) {
 export default function Navbar() {
   const [hoveredTo, setHoveredTo] = useState(null)
   const [query, setQuery] = useState('')
+  const [authUser, setAuthUser] = useState(null)
+  const [authBusy, setAuthBusy] = useState(false)
+
+  useEffect(() => {
+    let cancelled = false
+
+    async function refreshAuth() {
+      let server = await fetchServerSessionUser()
+      if (
+        !server.ok &&
+        server.code !== 'no_server_api' &&
+        isSupabaseConfigured() &&
+        getSupabase()
+      ) {
+        await syncSupabaseSessionToServer(getSupabase())
+        server = await fetchServerSessionUser()
+      }
+      if (cancelled) return
+
+      if (server.ok) {
+        setAuthUser(server.user)
+        return
+      }
+
+      if (isSupabaseConfigured() && getSupabase()) {
+        const { data } = await getSupabase().auth.getUser()
+        if (cancelled) return
+        const u = data.user
+        setAuthUser(u ? { id: u.id, email: u.email ?? undefined } : null)
+        return
+      }
+
+      setAuthUser(null)
+    }
+
+    refreshAuth()
+
+    const sb = getSupabase()
+    if (!sb) {
+      return () => {
+        cancelled = true
+      }
+    }
+
+    const { data: sub } = sb.auth.onAuthStateChange(() => {
+      refreshAuth()
+    })
+
+    return () => {
+      cancelled = true
+      sub.subscription.unsubscribe()
+    }
+  }, [])
+
+  async function handleLogout() {
+    setAuthBusy(true)
+    try {
+      await signOutEverywhere()
+      setAuthUser(null)
+    } finally {
+      setAuthBusy(false)
+    }
+  }
 
   return (
     <header className={styles.header} onMouseLeave={() => setHoveredTo(null)}>
@@ -76,12 +145,30 @@ export default function Navbar() {
             <button className={styles.pill} type="button">
               English
             </button>
-            <button className={`${styles.btn} ${styles.btnGhost}`} type="button">
-              登录
-            </button>
-            <button className={styles.btn} type="button">
-              注册
-            </button>
+            {authUser ? (
+              <>
+                <span className={styles.userHint} title={authUser.email ?? authUser.id}>
+                  {authUser.email ?? authUser.id}
+                </span>
+                <button
+                  className={`${styles.btn} ${styles.btnGhost}`}
+                  type="button"
+                  onClick={handleLogout}
+                  disabled={authBusy}
+                >
+                  {authBusy ? '退出中…' : '退出'}
+                </button>
+              </>
+            ) : (
+              <>
+                <Link className={`${styles.btn} ${styles.btnGhost}`} to="/login">
+                  登录
+                </Link>
+                <Link className={styles.btn} to="/register">
+                  注册
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </div>

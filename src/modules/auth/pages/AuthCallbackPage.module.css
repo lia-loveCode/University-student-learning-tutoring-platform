@@ -1,0 +1,77 @@
+.wrap {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: var(--space-32) var(--container-padding-x) var(--space-48);
+}
+
+.title {
+  margin: 0 0 var(--space-8);
+  font-size: clamp(22px, 3vw, 30px);
+  color: var(--color-text-strong);
+  letter-spacing: -0.02em;
+}
+
+.sub {
+  margin: 0 0 var(--space-20);
+  color: var(--color-text);
+  opacity: 0.9;
+}
+
+.card {
+  border-radius: var(--radius-16);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  background: rgba(15, 23, 42, 0.04);
+  padding: var(--space-16);
+}
+
+.hint {
+  margin: 0 0 var(--space-12);
+  font-size: var(--text-14);
+  line-height: 1.6;
+  color: var(--color-text);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-12);
+  align-items: center;
+}
+
+.btn {
+  appearance: none;
+  border: none;
+  border-radius: var(--radius-pill);
+  padding: 10px 14px;
+  cursor: pointer;
+  font-size: var(--text-14);
+  font-weight: 600;
+  line-height: 1.2;
+  background: rgba(37, 99, 235, 0.92);
+  color: white;
+}
+
+.btn:hover {
+  background: rgba(37, 99, 235, 1);
+}
+
+.btnGhost {
+  background: rgba(15, 23, 42, 0.06);
+  color: var(--color-text-strong);
+}
+
+.btnGhost:hover {
+  background: rgba(15, 23, 42, 0.1);
+}
+
+.urlBox {
+  margin-top: var(--space-12);
+  padding: var(--space-12);
+  border-radius: var(--radius-12);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  background: rgba(15, 23, 42, 0.03);
+  font-size: var(--text-12);
+  overflow-wrap: anywhere;
+  user-select: all;
+}
+
