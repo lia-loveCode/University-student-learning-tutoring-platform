@@ -12,6 +12,7 @@ import RegisterPage from '../modules/auth/pages/RegisterPage.jsx'
 import LoginPage from '../modules/auth/pages/LoginPage.jsx'
 import AuthCallbackPage from '../modules/auth/pages/AuthCallbackPage.jsx'
 import ResetPasswordPage from '../modules/auth/pages/ResetPasswordPage.jsx'
+import LayoutLabPage from '../modules/layoutLab/pages/LayoutLabPage.jsx'
 import NotFoundPage from '../modules/notFound/pages/NotFoundPage.jsx'
 
 export default function App() {
@@ -29,6 +30,7 @@ export default function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/auth/callback" element={<AuthCallbackPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
+        <Route path="/layout-lab" element={<LayoutLabPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>

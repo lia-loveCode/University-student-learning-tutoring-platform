@@ -3,6 +3,93 @@
   margin-top: 6px;
 }
 
+.recommendSection {
+  margin-top: 14px;
+}
+
+.recommendTitleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.recommendTitle {
+  margin: 0;
+  font-size: var(--text-18);
+  line-height: var(--lh-24);
+  color: var(--color-text-strong);
+}
+
+.recommendBadge {
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 10px;
+  border-radius: var(--radius-pill);
+  background: rgba(155, 123, 255, 0.12);
+  border: 1px solid rgba(155, 123, 255, 0.18);
+  color: rgba(155, 123, 255, 1);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.recommendCard {
+  margin-top: 10px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 14px;
+  border-radius: var(--radius-12);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+  text-decoration: none;
+  color: inherit;
+  transition: transform 120ms ease, border-color 120ms ease, box-shadow 120ms ease;
+}
+
+.recommendCard:hover {
+  border-color: rgba(22, 119, 255, 0.3);
+  box-shadow: var(--shadow-card-hover);
+  transform: translateY(-1px);
+}
+
+.recommendIcon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-12);
+  display: grid;
+  place-items: center;
+  background: linear-gradient(180deg, rgba(22, 119, 255, 0.14), rgba(155, 123, 255, 0.10));
+  border: 1px solid rgba(22, 119, 255, 0.16);
+  color: var(--color-text-strong);
+  font-weight: 700;
+  user-select: none;
+}
+
+.recommendBody {
+  flex: 1;
+  min-width: 0;
+}
+
+.recommendCardTitle {
+  font-weight: 650;
+  color: var(--color-text-strong);
+}
+
+.recommendDesc {
+  margin-top: 6px;
+  color: var(--color-text-dim);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.recommendArrow {
+  color: var(--color-text-dim);
+  font-size: 18px;
+}
+
 .form {
   margin-top: 16px;
   display: grid;
