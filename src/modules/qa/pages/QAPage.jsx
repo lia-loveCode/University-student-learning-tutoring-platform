@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { createQuestion, listQuestions } from '../api/qaApi.js'
 import styles from './QAPage.module.css'
 
@@ -52,6 +53,27 @@ export default function QAPage() {
     <section>
       <h1>提问</h1>
       <p className={styles.subtle}>发布问题后会写入 Supabase，并出现在列表顶部。</p>
+
+      <div className={styles.recommendSection} aria-label="学习推荐">
+        <div className={styles.recommendTitleRow}>
+          <h2 className={styles.recommendTitle}>学习推荐</h2>
+          <span className={styles.recommendBadge}>布局</span>
+        </div>
+        <Link to="/layout-lab" className={styles.recommendCard}>
+          <div className={styles.recommendIcon} aria-hidden="true">
+            ⬚
+          </div>
+          <div className={styles.recommendBody}>
+            <div className={styles.recommendCardTitle}>Flex / Grid 布局实验室</div>
+            <div className={styles.recommendDesc}>
+              点按钮就能把 <code>align-items</code> / <code>justify-content</code> 等样式加到预览里，直观看主轴/侧轴与垂直居中策略差异。
+            </div>
+          </div>
+          <div className={styles.recommendArrow} aria-hidden="true">
+            →
+          </div>
+        </Link>
+      </div>
 
       <form
         onSubmit={onSubmit}
